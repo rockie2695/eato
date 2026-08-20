@@ -1,0 +1,32 @@
+{
+  "name": "eato",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Eato – Cross-platform smart restaurant ordering system",
+  "scripts": {
+    "dev:web": "pnpm --filter @eato/web dev",
+    "dev:mobile": "pnpm --filter @eato/mobile start",
+    "dev:backend": "pnpm --filter @eato/backend dev",
+    "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:web\"",
+    "build:web": "pnpm --filter @eato/web build",
+    "build:shared": "pnpm --filter @eato/shared build",
+    "build:backend": "pnpm --filter @eato/backend build",
+    "test": "pnpm -r test",
+    "test:shared": "pnpm --filter @eato/shared test",
+    "test:backend": "pnpm --filter @eato/backend test",
+    "test:coverage": "pnpm -r test:coverage",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "db:generate": "pnpm --filter @eato/backend prisma:generate",
+    "db:migrate": "pnpm --filter @eato/backend prisma:migrate",
+    "db:seed": "pnpm --filter @eato/backend prisma:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

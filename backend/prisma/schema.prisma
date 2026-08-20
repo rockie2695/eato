@@ -1,0 +1,181 @@
+// ─── Eato Database Schema ──────────────────────────────────────
+// This Prisma schema defines all database models for the ordering system.
+// Run `npx prisma migrate dev` to apply changes.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── User Model ────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      UserRole @default(customer)
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders   Order[]
+  cart     Cart?
+
+  @@map("users")
+}
+
+enum UserRole {
+  customer
+  staff
+  kitchen
+  admin
+}
+
+// ─── Menu Category ─────────────────────────────────────────────
+
+model MenuCategory {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  image       String?
+  sortOrder   Int        @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  items MenuItem[]
+
+  @@map("menu_categories")
+}
+
+// ─── Menu Item ─────────────────────────────────────────────────
+
+model MenuItem {
+  id              String   @id @default(uuid())
+  categoryId      String
+  name            String
+  description     String?
+  price           Int      // Price in cents
+  image           String?
+  isAvailable     Boolean  @default(true)
+  isFeatured      Boolean  @default(false)
+  tags            String[] // Array of tag strings
+  preparationTime Int?     // In minutes
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  category   MenuCategory @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+  @@index([isAvailable])
+  @@index([isFeatured])
+  @@map("menu_items")
+}
+
+// ─── Cart ──────────────────────────────────────────────────────
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  updatedAt DateTime   @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id                   String @id @default(uuid())
+  cartId               String
+  menuItemId           String
+  quantity             Int    @default(1)
+  specialInstructions  String?
+
+  cart     Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@unique([cartId, menuItemId])
+  @@map("cart_items")
+}
+
+// ─── Order ─────────────────────────────────────────────────────
+
+model Order {
+  id             String        @id @default(uuid())
+  userId         String
+  tableNumber    Int?
+  status         OrderStatus   @default(pending)
+  paymentMethod  PaymentMethod @default(cash)
+  paymentStatus  PaymentStatus @default(pending)
+  totalAmount    Int           // Total in cents
+  stripeSessionId String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  pending
+  confirmed
+  preparing
+  ready
+  served
+  completed
+  cancelled
+}
+
+enum PaymentMethod {
+  cash
+  online
+  card
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  refunded
+}
+
+model OrderItem {
+  id                   String @id @default(uuid())
+  orderId              String
+  menuItemId           String
+  quantity             Int
+  price                Int    // Price at time of order (in cents)
+  specialInstructions  String?
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("order_items")
+}
+
+// ─── Table ─────────────────────────────────────────────────────
+
+model Table {
+  id        String  @id @default(uuid())
+  number    Int     @unique
+  capacity  Int     @default(4)
+  isOccupied Boolean @default(false)
+  qrCode    String?
+
+  @@map("tables")
+}
