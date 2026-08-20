@@ -108,7 +108,8 @@ Shared business logic used by both Web and Mobile:
 
 - **`types/`** - TypeScript interfaces matching Prisma schema
 - **`api/`** - Axios-based API client with platform-adaptive storage
-- **`stores/`** - Zustand state management (auth, cart, order, theme)
+- **`stores/`** - Zustand state management (auth, cart, order, theme, notification)
+- **`api/`** - Includes analytics API (reports, revenue trends, popular items)
 - **`utils/`** - Pure utility functions (formatting, validation, calculations)
 - **`constants/`** - Application-wide constants and enum configs
 
@@ -121,6 +122,8 @@ Vite-powered React web application:
 - React Query for server state management
 - Socket.io client for real-time updates
 - Admin dashboard with theme customization
+- Admin reports & analytics (daily/weekly/monthly)
+- Notification system (news ticker + popup)
 - Sentry error tracking and performance monitoring
 - Skeleton loaders and spinners for loading states
 
@@ -132,6 +135,7 @@ Expo React Native mobile application:
 - NativeWind for styling
 - Expo SecureStore for token storage
 - Socket.io client for real-time updates
+- Notification system (news ticker + popup)
 - Customer-facing features only
 
 ### `@eato/backend`
@@ -144,6 +148,7 @@ Express REST API server:
 - Socket.io for real-time order updates
 - Stripe integration for online payments
 - Swagger / OpenAPI 3.0 documentation
+- Analytics & reporting API (admin only)
 - Sentry error tracking and performance monitoring
 
 ## 🎨 Theme Customization
@@ -155,6 +160,52 @@ Admins can customize the color theme from the Admin Dashboard:
 3. Changes apply instantly via CSS custom properties
 
 Available themes: Orange, Blue, Green, Purple, Rose, Teal
+
+## 🔔 Notification System
+
+The notification system supports two types of alerts:
+
+### News Ticker
+- Scrolling banner displayed at the top of the page/app
+- Auto-rotates through multiple announcements
+- Clickable links for promotions
+- Can be dismissed by users
+
+### Popup Notifications
+- Modal dialogs with optional images
+- Single popup or multi-slide carousel
+- Appears after 1 second delay
+- Dismissed state persists per session
+
+### Admin Management
+- Create/edit/delete notifications from Admin Dashboard → Notifications tab
+- Set type (ticker/popup), title, message, image, link
+- Priority control (0-100) for ordering
+- Active/inactive toggle
+
+## 📊 Reports & Analytics
+
+Admin reports with daily, weekly, and monthly views:
+
+### Overview
+- Total Revenue, Total Orders, Avg Order Value, New Customers
+
+### Revenue Trend
+- Bar chart showing revenue over time for the selected period
+
+### Popular Items
+- Top 10 best-selling menu items by quantity
+
+### Peak Hours
+- Orders by hour of day to identify busy times
+
+### Order Status
+- Distribution of orders by status (pending, confirmed, preparing, etc.)
+
+### Payment Methods
+- Breakdown by payment method (cash, card, online)
+
+Access via Admin Dashboard → Reports tab, or via API at `/api/v1/analytics/*`
 
 ## 🔌 API Documentation
 

@@ -15,4 +15,6 @@ export {
   createCartApi,
   createOrderApi,
   createStaffApi,
+  createNotificationApi,
+  createAnalyticsApi,
 } from './endpoints';

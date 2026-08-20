@@ -24,6 +24,17 @@ import type {
   Order,
   CreateOrderRequest,
   UpdateOrderStatusRequest,
+  Notification,
+  CreateNotificationRequest,
+  UpdateNotificationRequest,
+  ReportPeriod,
+  ReportData,
+  ReportOverview,
+  RevenueTrendPoint,
+  PopularItem,
+  StatusDistribution,
+  PaymentBreakdown,
+  PeakHour,
   PaginatedResponse,
   ApiResponse,
 } from '../types';
@@ -250,6 +261,131 @@ export function createStaffApi(client: AxiosInstance) {
     /** Delete staff member */
     deleteStaff: async (id: string): Promise<void> => {
       await client.delete(`/staff/${id}`);
+    },
+  };
+}
+
+// ─── Notification API ────────────────────────────────────────
+
+export function createNotificationApi(client: AxiosInstance) {
+  return {
+    /** Get active notifications (public, for users) */
+    getActive: async (type?: 'ticker' | 'popup'): Promise<Notification[]> => {
+      const params = type ? { type } : {};
+      const res = await client.get<ApiResponse<Notification[]>>(
+        '/notifications/active',
+        { params }
+      );
+      return res.data.data;
+    },
+
+    /** Get all notifications (admin) */
+    getAll: async (params?: {
+      type?: 'ticker' | 'popup';
+      page?: number;
+      limit?: number;
+    }): Promise<PaginatedResponse<Notification>> => {
+      const res = await client.get<PaginatedResponse<Notification>>(
+        '/notifications',
+        { params }
+      );
+      return res.data;
+    },
+
+    /** Get notification by ID (admin) */
+    getById: async (id: string): Promise<Notification> => {
+      const res = await client.get<ApiResponse<Notification>>(
+        `/notifications/${id}`
+      );
+      return res.data.data;
+    },
+
+    /** Create notification (admin) */
+    create: async (data: CreateNotificationRequest): Promise<Notification> => {
+      const res = await client.post<ApiResponse<Notification>>(
+        '/notifications',
+        data
+      );
+      return res.data.data;
+    },
+
+    /** Update notification (admin) */
+    update: async (
+      id: string,
+      data: UpdateNotificationRequest
+    ): Promise<Notification> => {
+      const res = await client.put<ApiResponse<Notification>>(
+        `/notifications/${id}`,
+        data
+      );
+      return res.data.data;
+    },
+
+    /** Delete notification (admin) */
+    delete: async (id: string): Promise<void> => {
+      await client.delete(`/notifications/${id}`);
+    },
+  };
+}
+
+// ─── Analytics API ────────────────────────────────────────────
+
+export function createAnalyticsApi(client: AxiosInstance) {
+  return {
+    /** Get full report for a period (admin) */
+    getReport: async (period: ReportPeriod = 'monthly'): Promise<ReportData> => {
+      const res = await client.get<ApiResponse<ReportData>>('/analytics/report', {
+        params: { period },
+      });
+      return res.data.data;
+    },
+
+    /** Get overview stats (admin) */
+    getOverview: async (period: ReportPeriod = 'monthly'): Promise<ReportOverview> => {
+      const res = await client.get<ApiResponse<ReportOverview>>('/analytics/overview', {
+        params: { period },
+      });
+      return res.data.data;
+    },
+
+    /** Get revenue trend (admin) */
+    getRevenueTrend: async (period: ReportPeriod = 'monthly'): Promise<RevenueTrendPoint[]> => {
+      const res = await client.get<ApiResponse<RevenueTrendPoint[]>>('/analytics/revenue-trend', {
+        params: { period },
+      });
+      return res.data.data;
+    },
+
+    /** Get popular items (admin) */
+    getPopularItems: async (limit: number = 10): Promise<PopularItem[]> => {
+      const res = await client.get<ApiResponse<PopularItem[]>>('/analytics/popular-items', {
+        params: { limit },
+      });
+      return res.data.data;
+    },
+
+    /** Get order status distribution (admin) */
+    getStatusDistribution: async (period: ReportPeriod = 'monthly'): Promise<StatusDistribution[]> => {
+      const res = await client.get<ApiResponse<StatusDistribution[]>>('/analytics/status-dist', {
+        params: { period },
+      });
+      return res.data.data;
+    },
+
+    /** Get payment method breakdown (admin) */
+    getPaymentBreakdown: async (period: ReportPeriod = 'monthly'): Promise<PaymentBreakdown[]> => {
+      const res = await client.get<ApiResponse<PaymentBreakdown[]>>('/analytics/payment-dist', {
+        params: { period },
+      });
+      return res.data.data;
+    },
+
+    /** Get peak hours (admin) */
+    getPeakHours: async (period: ReportPeriod = 'monthly'): Promise<PeakHour[]> => {
+      const res = await client.get<ApiResponse<PeakHour[]>>('/analytics/peak-hours', {
+        params: { period },
+      });
+      return res.data.data;
     },
   };
 }

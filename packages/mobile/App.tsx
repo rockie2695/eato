@@ -13,7 +13,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, View, ActivityIndicator } from 'react-native';
 
 // Stores
-import { useAuthStore, useCartStore } from './src/stores';
+import { useAuthStore, useCartStore, useNotificationStore, notificationApi } from './src/stores';
+
+// Components
+import { NewsTicker } from './src/components/NewsTicker';
+import { NotificationPopup } from './src/components/NotificationPopup';
 
 // Screens
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -91,10 +95,18 @@ function TabNavigator() {
 export default function App() {
   const { initialize, isLoading } = useAuthStore();
   const { loadCart } = useCartStore();
+  const {
+    tickers,
+    popups,
+    dismissedPopups,
+    loadActive,
+    dismissPopup,
+  } = useNotificationStore();
 
   useEffect(() => {
     initialize();
     loadCart();
+    loadActive(notificationApi.getActive);
   }, []);
 
   if (isLoading) {
@@ -108,29 +120,41 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: { backgroundColor: '#ea580c' },
-            headerTintColor: '#fff',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }}
-        >
-          <Stack.Screen
-            name="Main"
-            component={TabNavigator}
-            options={{ headerShown: false }}
+        <View style={{ flex: 1 }}>
+          {/* News Ticker - shows at top of all screens */}
+          <NewsTicker tickers={tickers} />
+
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: { backgroundColor: '#ea580c' },
+              headerTintColor: '#fff',
+              headerTitleStyle: { fontWeight: 'bold' },
+            }}
+          >
+            <Stack.Screen
+              name="Main"
+              component={TabNavigator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ title: 'Sign In' }}
+            />
+            <Stack.Screen
+              name="OrderDetail"
+              component={OrderDetailScreen}
+              options={{ title: 'Order Details' }}
+            />
+          </Stack.Navigator>
+
+          {/* Notification Popup */}
+          <NotificationPopup
+            popups={popups}
+            dismissedIds={dismissedPopups}
+            onDismiss={dismissPopup}
           />
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ title: 'Sign In' }}
-          />
-          <Stack.Screen
-            name="OrderDetail"
-            component={OrderDetailScreen}
-            options={{ title: 'Order Details' }}
-          />
-        </Stack.Navigator>
+        </View>
       </NavigationContainer>
       <StatusBar style="auto" />
     </SafeAreaProvider>

@@ -22,7 +22,8 @@ eato/
 │   │   ├── src/
 │   │   │   ├── components/    # UI components (shadcn/ui)
 │   │   │   │   ├── ui/        # Button, Card, Skeleton, Spinner, etc.
-│   │   │   │   └── layout/    # Header, Footer
+│   │   │   │   ├── layout/    # Header, Footer
+│   │   │   │   └── notification/ # NewsTicker, NotificationPopup
 │   │   │   ├── pages/         # Route pages
 │   │   │   ├── hooks/         # Custom React hooks
 │   │   │   ├── stores/        # Web-specific store setup
@@ -33,7 +34,7 @@ eato/
 │   └── mobile/                 # Expo React Native app
 │       ├── src/
 │       │   ├── screens/       # Screen components
-│       │   ├── components/    # Reusable components
+│       │   ├── components/    # Reusable components (NewsTicker, NotificationPopup)
 │       │   ├── hooks/         # Custom hooks
 │       │   └── stores/        # Mobile-specific store setup
 │       └── package.json
@@ -124,7 +125,7 @@ This pattern allows Web and Mobile to use the same store logic with different im
 
 ### Module Pattern
 
-Each feature (auth, menu, cart, order, staff) follows the same structure:
+Each feature (auth, menu, cart, order, staff, notification, analytics) follows the same structure:
 
 ```
 modules/
@@ -178,6 +179,53 @@ Key relationships:
 - **User** → has many **Orders** → has many **OrderItems**
 - **MenuCategory** → has many **MenuItems**
 - **OrderItem** references **MenuItem** (with price snapshot)
+
+## Notification System
+
+The notification system provides two types of alerts:
+
+### News Ticker (Scrolling Banner)
+- Displayed at the top of the page/app
+- Auto-rotates through multiple announcements every 5 seconds
+- Clickable links for promotions
+- Dismissable by users
+- Priority-based ordering (higher priority shown first)
+
+### Popup Notifications (Modal)
+- Full-screen modal with optional images
+- Supports single popup or multi-slide carousel
+- Appears after 1.5 second delay
+- Dismissed state persists per session (not in storage)
+
+### Data Flow
+```
+Admin Dashboard ──create──► Backend API ──store──► PostgreSQL
+                                                      │
+Web App ◄──fetch──► GET /notifications/active ◄───────┘
+Mobile App ◄──fetch──► GET /notifications/active ◄─────┘
+```
+
+## Analytics & Reporting
+
+The analytics system provides admin-only reporting with daily, weekly, and monthly aggregations.
+
+### Data Points
+- **Revenue**: Total, trend over time, average order value
+- **Orders**: Count by status, payment method breakdown
+- **Popular Items**: Top sellers by quantity and revenue
+- **Peak Hours**: Orders by hour of day for staffing optimization
+- **Customers**: New customer count per period
+
+### Architecture
+```
+analytics/
+├── validation.ts   # Zod schemas (period, limit)
+├── service.ts      # Prisma aggregations + grouping
+└── routes.ts       # 7 GET endpoints (admin-only)
+```
+
+### Caching
+Analytics data is not cached (queries are time-sensitive). The Prisma `aggregate` and `groupBy` APIs handle efficient database-level aggregation.
 
 ## Loading States
 

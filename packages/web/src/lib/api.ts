@@ -13,6 +13,8 @@ import {
   createCartApi,
   createOrderApi,
   createStaffApi,
+  createNotificationApi,
+  createAnalyticsApi,
 } from '@eato/shared/api';
 
 /** API client instance configured for web platform */
@@ -24,6 +26,8 @@ export const menuApi = createMenuApi(apiClient);
 export const cartApi = createCartApi(apiClient);
 export const orderApi = createOrderApi(apiClient);
 export const staffApi = createStaffApi(apiClient);
+export const notificationApi = createNotificationApi(apiClient);
+export const analyticsApi = createAnalyticsApi(apiClient);
 
 /** Export storage for store initialization */
 export { webStorage as storage };

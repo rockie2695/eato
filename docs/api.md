@@ -387,6 +387,179 @@ Delete a staff member.
 
 ---
 
+## Notifications
+
+### GET /notifications/active
+
+Get active notifications for users (public endpoint).
+
+**Query Parameters:**
+- `type` - Filter by type: `ticker` or `popup`
+
+**Response (200):**
+```json
+{
+  "data": [
+    {
+      "id": "...",
+      "type": "ticker",
+      "title": "Happy Hour Special",
+      "message": "50% off all drinks from 5-7 PM",
+      "isActive": true,
+      "priority": 10,
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+### GET /notifications (Admin)
+
+Get all notifications (admin view, includes inactive).
+
+**Query Parameters:**
+- `type` - Filter by type
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 50)
+
+**Response (200):**
+```json
+{
+  "data": [...],
+  "total": 25,
+  "page": 1,
+  "limit": 50,
+  "totalPages": 1
+}
+```
+
+### GET /notifications/:id (Admin)
+
+Get notification by ID.
+
+### POST /notifications (Admin)
+
+Create a new notification.
+
+**Request:**
+```json
+{
+  "type": "ticker",
+  "title": "Summer Sale",
+  "message": "20% off all orders this weekend!",
+  "image": "https://example.com/promo.jpg",
+  "link": "https://example.com/summer-sale",
+  "isActive": true,
+  "priority": 50,
+  "startsAt": "2024-06-01T00:00:00Z",
+  "expiresAt": "2024-06-30T23:59:59Z"
+}
+```
+
+**Fields:**
+- `type` (required): `ticker` or `popup`
+- `title` (required): Max 200 chars
+- `message` (required): Max 2000 chars
+- `image` (optional): URL for popup images
+- `link` (optional): URL when clicked
+- `priority` (optional): 0-100, higher shown first
+- `startsAt` (optional): When to start showing
+- `expiresAt` (optional): When to stop showing
+
+### PUT /notifications/:id (Admin)
+
+Update a notification (partial update).
+
+### DELETE /notifications/:id (Admin)
+
+Delete a notification.
+
+---
+
+## Analytics (Admin only)
+
+All analytics endpoints require admin authentication.
+
+### GET /analytics/report
+
+Get complete analytics report for a given period.
+
+**Query Parameters:**
+- `period` - `daily`, `weekly`, or `monthly` (default: `monthly`)
+
+**Response (200):**
+```json
+{
+  "data": {
+    "overview": {
+      "period": "monthly",
+      "dateRange": { "start": "2026-08-01T00:00:00Z", "end": "2026-08-31T23:59:59Z" },
+      "totalOrders": 1250,
+      "totalRevenue": 4567800,
+      "avgOrderValue": 3654,
+      "newCustomers": 89
+    },
+    "revenueTrend": [
+      { "date": "2026-08-01", "revenue": 125000, "orders": 42 }
+    ],
+    "popularItems": [
+      {
+        "menuItem": { "id": "...", "name": "Spring Rolls", "price": 899 },
+        "totalQuantity": 156,
+        "totalRevenue": 140244,
+        "orderCount": 98
+      }
+    ],
+    "statusDistribution": [
+      { "status": "completed", "count": 890 },
+      { "status": "preparing", "count": 12 }
+    ],
+    "paymentBreakdown": [
+      { "method": "card", "count": 750, "total": 2890000 }
+    ],
+    "peakHours": [
+      { "hour": 12, "orders": 185 },
+      { "hour": 19, "orders": 210 }
+    ]
+  }
+}
+```
+
+### GET /analytics/overview
+
+Get summary statistics for a period.
+
+**Query Parameters:**
+- `period` - `daily`, `weekly`, or `monthly` (default: `monthly`)
+
+### GET /analytics/revenue-trend
+
+Get revenue over time for a period.
+
+**Query Parameters:**
+- `period` - `daily`, `weekly`, or `monthly` (default: `monthly`)
+
+### GET /analytics/popular-items
+
+Get top selling menu items.
+
+**Query Parameters:**
+- `limit` - Number of items (1-50, default: 10)
+
+### GET /analytics/status-dist
+
+Get order count by status for a period.
+
+### GET /analytics/payment-dist
+
+Get order and revenue by payment method for a period.
+
+### GET /analytics/peak-hours
+
+Get order count by hour of day (0-23) for a period.
+
+---
+
 ## Payments (Stripe Webhook)
 
 ### POST /payments/webhook

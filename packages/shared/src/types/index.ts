@@ -212,6 +212,106 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
+// ─── Notification ──────────────────────────────────────────────
+
+/** Notification type: ticker (scrolling banner) or popup (modal dialog) */
+export type NotificationType = 'ticker' | 'popup';
+
+/** A notification created by admin */
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  image?: string;
+  link?: string;
+  isActive: boolean;
+  priority: number;
+  startsAt?: string;
+  expiresAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Create notification request */
+export interface CreateNotificationRequest {
+  type: NotificationType;
+  title: string;
+  message: string;
+  image?: string;
+  link?: string;
+  isActive?: boolean;
+  priority?: number;
+  startsAt?: string;
+  expiresAt?: string;
+}
+
+/** Update notification request */
+export type UpdateNotificationRequest = Partial<CreateNotificationRequest>;
+
+// ─── Analytics / Reports ───────────────────────────────────────
+
+export type ReportPeriod = 'daily' | 'weekly' | 'monthly';
+
+export interface ReportDateRange {
+  start: string;
+  end: string;
+}
+
+export interface ReportOverview {
+  period: ReportPeriod;
+  dateRange: ReportDateRange;
+  totalOrders: number;
+  totalRevenue: number;
+  avgOrderValue: number;
+  newCustomers: number;
+}
+
+export interface RevenueTrendPoint {
+  date: string;
+  revenue: number;
+  orders: number;
+}
+
+export interface PopularMenuItem {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+}
+
+export interface PopularItem {
+  menuItem: PopularMenuItem;
+  totalQuantity: number;
+  totalRevenue: number;
+  orderCount: number;
+}
+
+export interface StatusDistribution {
+  status: string;
+  count: number;
+}
+
+export interface PaymentBreakdown {
+  method: string;
+  count: number;
+  total: number;
+}
+
+export interface PeakHour {
+  hour: number;
+  orders: number;
+}
+
+export interface ReportData {
+  overview: ReportOverview;
+  revenueTrend: RevenueTrendPoint[];
+  popularItems: PopularItem[];
+  statusDistribution: StatusDistribution[];
+  paymentBreakdown: PaymentBreakdown[];
+  peakHours: PeakHour[];
+}
+
 // ─── Socket Events ─────────────────────────────────────────────
 
 /** Real-time order update event */

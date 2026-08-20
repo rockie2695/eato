@@ -8,7 +8,9 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { useAuthStore, useCartStore, useThemeStore } from '@/stores';
+import { NewsTicker } from '@/components/notification/news-ticker';
+import { NotificationPopup } from '@/components/notification/notification-popup';
+import { useAuthStore, useCartStore, useThemeStore, useNotificationStore, notificationApi } from '@/stores';
 
 // Pages
 import { HomePage } from '@/pages/home';
@@ -24,17 +26,28 @@ function App() {
   const { initialize } = useAuthStore();
   const { loadCart } = useCartStore();
   const { loadTheme } = useThemeStore();
+  const {
+    tickers,
+    popups,
+    dismissedPopups,
+    loadActive,
+    dismissPopup,
+  } = useNotificationStore();
 
   // Initialize stores on app start
   useEffect(() => {
     initialize();
     loadCart();
     loadTheme();
+    loadActive(notificationApi.getActive);
   }, []);
 
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col">
+        {/* News Ticker - shows below header */}
+        <NewsTicker tickers={tickers} />
+
         <Header />
         <main className="flex-1 page-transition">
           <Routes>
@@ -50,6 +63,13 @@ function App() {
           </Routes>
         </main>
         <Footer />
+
+        {/* Notification Popup */}
+        <NotificationPopup
+          popups={popups}
+          dismissedIds={dismissedPopups}
+          onDismiss={dismissPopup}
+        />
       </div>
     </BrowserRouter>
   );

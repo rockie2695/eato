@@ -347,6 +347,111 @@ Authorization: Bearer <access_token>
             totalPages: { type: 'integer' },
           },
         },
+        // ── Analytics Schemas ──────────────────────────────
+        ReportOverview: {
+          type: 'object',
+          properties: {
+            period: { type: 'string', enum: ['daily', 'weekly', 'monthly'] },
+            dateRange: {
+              type: 'object',
+              properties: {
+                start: { type: 'string', format: 'date-time' },
+                end: { type: 'string', format: 'date-time' },
+              },
+            },
+            totalOrders: { type: 'integer' },
+            totalRevenue: { type: 'integer', description: 'Revenue in cents' },
+            avgOrderValue: { type: 'integer', description: 'Average order value in cents' },
+            newCustomers: { type: 'integer' },
+          },
+        },
+        RevenueTrendPoint: {
+          type: 'object',
+          properties: {
+            date: { type: 'string', format: 'date' },
+            revenue: { type: 'integer', description: 'Revenue in cents' },
+            orders: { type: 'integer' },
+          },
+        },
+        PopularItem: {
+          type: 'object',
+          properties: {
+            menuItem: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' },
+                name: { type: 'string' },
+                price: { type: 'integer' },
+                image: { type: 'string', nullable: true },
+              },
+            },
+            totalQuantity: { type: 'integer' },
+            totalRevenue: { type: 'integer' },
+            orderCount: { type: 'integer' },
+          },
+        },
+        StatusDistribution: {
+          type: 'object',
+          properties: {
+            status: { type: 'string' },
+            count: { type: 'integer' },
+          },
+        },
+        PaymentBreakdown: {
+          type: 'object',
+          properties: {
+            method: { type: 'string' },
+            count: { type: 'integer' },
+            total: { type: 'integer', description: 'Total in cents' },
+          },
+        },
+        PeakHour: {
+          type: 'object',
+          properties: {
+            hour: { type: 'integer', minimum: 0, maximum: 23 },
+            orders: { type: 'integer' },
+          },
+        },
+        // ── Notification Schemas ───────────────────────────
+        Notification: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            type: {
+              type: 'string',
+              enum: ['ticker', 'popup'],
+              description: 'ticker = scrolling banner, popup = modal dialog',
+            },
+            title: { type: 'string' },
+            message: { type: 'string' },
+            image: { type: 'string', nullable: true },
+            link: { type: 'string', nullable: true },
+            isActive: { type: 'boolean' },
+            priority: { type: 'integer', description: 'Higher = shown first (0-100)' },
+            startsAt: { type: 'string', format: 'date-time', nullable: true },
+            expiresAt: { type: 'string', format: 'date-time', nullable: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        CreateNotificationRequest: {
+          type: 'object',
+          required: ['type', 'title', 'message'],
+          properties: {
+            type: {
+              type: 'string',
+              enum: ['ticker', 'popup'],
+            },
+            title: { type: 'string', maxLength: 200 },
+            message: { type: 'string', maxLength: 2000 },
+            image: { type: 'string', format: 'uri' },
+            link: { type: 'string', format: 'uri' },
+            isActive: { type: 'boolean', default: true },
+            priority: { type: 'integer', minimum: 0, maximum: 100, default: 0 },
+            startsAt: { type: 'string', format: 'date-time' },
+            expiresAt: { type: 'string', format: 'date-time' },
+          },
+        },
       },
     },
     security: [

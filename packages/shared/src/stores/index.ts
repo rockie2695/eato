@@ -16,3 +16,6 @@ export type { OrderStore } from './orderStore';
 
 export { createThemeStore } from './themeStore';
 export type { ThemeStore, Theme } from './themeStore';
+
+export { createNotificationStore } from './notificationStore';
+export type { NotificationStore } from './notificationStore';

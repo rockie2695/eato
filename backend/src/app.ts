@@ -20,6 +20,8 @@ import cartRoutes from './modules/cart/routes.js';
 import orderRoutes from './modules/order/routes.js';
 import paymentRoutes from './modules/payment/routes.js';
 import staffRoutes from './modules/staff/routes.js';
+import notificationRoutes from './modules/notification/routes.js';
+import analyticsRoutes from './modules/analytics/routes.js';
 
 const app = express();
 
@@ -68,6 +70,8 @@ apiRouter.use('/cart', cartRoutes);
 apiRouter.use('/orders', orderRoutes);
 apiRouter.use('/payments', paymentRoutes);
 apiRouter.use('/staff', staffRoutes);
+apiRouter.use('/notifications', notificationRoutes);
+apiRouter.use('/analytics', analyticsRoutes);
 
 app.use('/api/v1', apiRouter);
 

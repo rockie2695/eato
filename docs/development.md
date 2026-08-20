@@ -140,7 +140,7 @@ export function Component({ prop1, prop2 = 0 }: ComponentProps) {
 2. **Menu**: Browse → Filter → Search → View details
 3. **Cart**: Add items → Update quantity → Remove → Clear
 4. **Orders**: Create order → Track status → View history
-5. **Admin**: Manage menu → Manage staff → Customize theme
+5. **Admin**: Manage menu → Manage staff → Customize theme → View reports
 6. **Loading States**: Verify skeleton loaders appear during data fetching
 7. **Swagger**: Visit http://localhost:5000/api/docs to explore the API
 
