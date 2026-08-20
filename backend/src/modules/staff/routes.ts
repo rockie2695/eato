@@ -19,8 +19,30 @@ const router = Router();
 router.use(requireAuth, requireRole('admin'));
 
 /**
- * GET /
- * Get all staff users.
+ * @swagger
+ * /staff:
+ *   get:
+ *     tags: [Staff - Admin]
+ *     summary: Get all staff members
+ *     description: Retrieve all staff users. Requires admin role.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of staff members
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Admin role required
  */
 router.get('/', async (_req, res, next) => {
   try {
@@ -32,8 +54,43 @@ router.get('/', async (_req, res, next) => {
 });
 
 /**
- * POST /
- * Create a new staff account.
+ * @swagger
+ * /staff:
+ *   post:
+ *     tags: [Staff - Admin]
+ *     summary: Create a staff account
+ *     description: Create a new staff member account. Requires admin role.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/RegisterRequest'
+ *               - type: object
+ *                 properties:
+ *                   role:
+ *                     type: string
+ *                     enum: [staff, kitchen, admin]
+ *                     default: staff
+ *     responses:
+ *       201:
+ *         description: Staff account created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Admin role required
+ *       409:
+ *         description: Email already registered
  */
 router.post('/', validate(registerSchema), async (req, res, next) => {
   try {
@@ -49,8 +106,52 @@ router.post('/', validate(registerSchema), async (req, res, next) => {
 });
 
 /**
- * PUT /:id
- * Update a staff member.
+ * @swagger
+ * /staff/{id}:
+ *   put:
+ *     tags: [Staff - Admin]
+ *     summary: Update a staff member
+ *     description: Update a staff member's profile. Requires admin role.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Staff member ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [staff, kitchen, admin]
+ *     responses:
+ *       200:
+ *         description: Staff member updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Admin role required
+ *       404:
+ *         description: Staff member not found
  */
 router.put('/:id', async (req, res, next) => {
   try {
@@ -62,8 +163,31 @@ router.put('/:id', async (req, res, next) => {
 });
 
 /**
- * DELETE /:id
- * Delete a staff member.
+ * @swagger
+ * /staff/{id}:
+ *   delete:
+ *     tags: [Staff - Admin]
+ *     summary: Delete a staff member
+ *     description: Delete a staff member's account. Requires admin role.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Staff member ID
+ *     responses:
+ *       204:
+ *         description: Staff member deleted
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Admin role required
+ *       404:
+ *         description: Staff member not found
  */
 router.delete('/:id', async (req, res, next) => {
   try {

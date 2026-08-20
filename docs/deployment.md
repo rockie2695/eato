@@ -55,6 +55,7 @@ STRIPE_SECRET_KEY=<your-stripe-secret-key>
 STRIPE_WEBHOOK_SECRET=<your-stripe-webhook-secret>
 WEB_URL=<your-vercel-deployment-url>
 APP_URL=<your-expo-app-url>
+SENTRY_DSN=<your-sentry-dsn>  # Optional - for error tracking
 ```
 
 ### Generate Secrets
@@ -86,6 +87,7 @@ openssl rand -hex 32
 
 ```
 VITE_API_URL=https://your-backend.onrender.com/api/v1
+VITE_SENTRY_DSN=<your-sentry-dsn>  # Optional - for error tracking
 ```
 
 ### Custom Domain (Optional)
@@ -128,12 +130,55 @@ In `packages/mobile/src/stores/index.ts`, update the API base URL:
 const apiClient = createApiClient(mobileStorage, 'https://your-backend.onrender.com/api/v1');
 ```
 
-## 6. Verify Deployment
+## 6. Error Tracking (Sentry)
+
+### Backend
+
+1. Create a project on [Sentry](https://sentry.io) (free tier)
+2. Select Node.js platform
+3. Copy the DSN from the project settings
+4. Add to Render environment variables:
+   ```
+   SENTRY_DSN=https://your-dsn@sentry.io/project-id
+   ```
+
+### Web Frontend
+
+1. Create a project on Sentry (or reuse the organization)
+2. Select React platform
+3. Copy the DSN
+4. Add to Vercel environment variables:
+   ```
+   VITE_SENTRY_DSN=https://your-dsn@sentry.io/project-id
+   ```
+5. For source maps (optional), add to Vercel:
+   ```
+   SENTRY_ORG=your-org-slug
+   SENTRY_PROJECT_EATO_WEB=your-project-slug
+   SENTRY_AUTH_TOKEN=your-auth-token
+   ```
+
+### Free Tier Limits
+
+- 5,000 transactions/month (performance)
+- 10,000 errors/month
+- 30-day data retention
+
+## 7. API Documentation (Swagger)
+
+Swagger UI is automatically available at:
+- `https://your-backend.onrender.com/api/docs`
+
+No additional setup needed - it's built into the backend.
+
+## 8. Verify Deployment
 
 1. **Backend**: Visit `https://your-backend.onrender.com/health`
 2. **Web**: Visit your Vercel URL
-3. **Mobile**: Test with Expo Go or installed app
-4. **Stripe**: Test a payment in Stripe test mode
+3. **API Docs**: Visit `https://your-backend.onrender.com/api/docs`
+4. **Mobile**: Test with Expo Go or installed app
+5. **Stripe**: Test a payment in Stripe test mode
+6. **Sentry**: Trigger a test error and verify it appears in your Sentry dashboard
 
 ## Free Tier Limitations
 
@@ -157,6 +202,8 @@ Render's free tier spins down after 15 minutes of inactivity. The first request 
 - [ ] CORS origins updated for production URLs
 - [ ] JWT secrets are strong and unique
 - [ ] Database backups enabled (Supabase)
-- [ ] Error monitoring set up (Sentry, etc.)
+- [ ] Error monitoring set up (Sentry)
+- [ ] Sentry DSN configured (backend + web)
 - [ ] Rate limiting configured appropriately
 - [ ] SSL/HTTPS enabled (automatic on all platforms)
+- [ ] API docs accessible at /api/docs

@@ -9,7 +9,10 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
 import { config } from './config/index.js';
+import { swaggerSpec } from './config/swagger.js';
+import { Sentry } from './config/sentry.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './modules/auth/routes.js';
 import menuRoutes from './modules/menu/routes.js';
@@ -45,6 +48,17 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// ── Swagger Documentation ───────────────────────────────────────
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Eato API Documentation',
+}));
+
+// JSON spec for download
+app.get('/api/docs.json', (_req, res) => {
+  res.json(swaggerSpec);
+});
+
 // ── API Routes ─────────────────────────────────────────────────
 const apiRouter = express.Router();
 
@@ -65,6 +79,9 @@ app.use((_req, res) => {
     statusCode: 404,
   });
 });
+
+// ── Sentry Error Handler ──────────────────────────────────────
+Sentry.setupExpressErrorHandler(app);
 
 // ── Error Handler ──────────────────────────────────────────────
 app.use(errorHandler);

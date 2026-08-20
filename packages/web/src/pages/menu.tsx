@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { MenuSkeleton } from '@/components/ui/menu-skeleton';
 import { useCartStore } from '@/stores';
 import { menuApi } from '@/lib/api';
 import { formatPrice, formatPrepTime } from '@eato/shared/utils';
@@ -61,7 +62,7 @@ export function MenuPage() {
   }
 
   function getCartQuantity(menuItemId: string): number {
-    const cartItem = cartItems.find((i) => i.menuItemId === menuItemId);
+    const cartItem = cartItems.find((i: { menuItemId: string; quantity: number }) => i.menuItemId === menuItemId);
     return cartItem?.quantity || 0;
   }
 
@@ -70,13 +71,7 @@ export function MenuPage() {
   }
 
   if (loading) {
-    return (
-      <div className="container px-4 py-8">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
-      </div>
-    );
+    return <MenuSkeleton />;
   }
 
   return (
@@ -175,7 +170,7 @@ export function MenuPage() {
               {/* Tags */}
               {item.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-3">
-                  {item.tags.slice(0, 3).map((tag) => (
+                  {item.tags.slice(0, 3).map((tag: string) => (
                     <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>

@@ -29,6 +29,9 @@ eato/
 | **Real-time** | Socket.io |
 | **Auth** | JWT (Access + Refresh tokens) |
 | **Payment** | Stripe |
+| **API Docs** | Swagger / OpenAPI 3.0 |
+| **Error Tracking** | Sentry (free tier) |
+| **Monitoring** | Sentry Performance + Profiling |
 
 ## 🚀 Quick Start
 
@@ -82,7 +85,13 @@ pnpm dev:web        # Web on port 5173
 pnpm dev:mobile     # Mobile (opens Expo Go)
 ```
 
-### 5. Demo Accounts
+### 5. API Documentation
+
+Once the backend is running, visit:
+- **Swagger UI**: http://localhost:5000/api/docs
+- **JSON Spec**: http://localhost:5000/api/docs.json
+
+### 6. Demo Accounts
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -112,6 +121,8 @@ Vite-powered React web application:
 - React Query for server state management
 - Socket.io client for real-time updates
 - Admin dashboard with theme customization
+- Sentry error tracking and performance monitoring
+- Skeleton loaders and spinners for loading states
 
 ### `@eato/mobile`
 
@@ -132,6 +143,8 @@ Express REST API server:
 - Redis for caching, rate limiting, JWT blacklist
 - Socket.io for real-time order updates
 - Stripe integration for online payments
+- Swagger / OpenAPI 3.0 documentation
+- Sentry error tracking and performance monitoring
 
 ## 🎨 Theme Customization
 
@@ -143,41 +156,28 @@ Admins can customize the color theme from the Admin Dashboard:
 
 Available themes: Orange, Blue, Green, Purple, Rose, Teal
 
-## 🔌 API Endpoints
+## 🔌 API Documentation
 
-### Authentication
-- `POST /api/v1/auth/register` - Register new customer
-- `POST /api/v1/auth/login` - Login with credentials
-- `POST /api/v1/auth/refresh` - Refresh access token
-- `POST /api/v1/auth/logout` - Logout (blacklist token)
-- `GET /api/v1/auth/me` - Get current user profile
+Swagger UI is available at `/api/docs` when the backend is running. It includes:
 
-### Menu
-- `GET /api/v1/menu/categories` - Get all categories
-- `GET /api/v1/menu/items` - Get menu items (paginated)
-- `GET /api/v1/menu/items/:id` - Get single item
-- `GET /api/v1/menu/featured` - Get featured items
+- Full endpoint documentation for all routes
+- Request/response schemas
+- Authentication setup (Bearer token)
+- Example requests and responses
 
-### Cart
-- `GET /api/v1/cart` - Get current cart
-- `POST /api/v1/cart/items` - Add item to cart
-- `PUT /api/v1/cart/items/:id` - Update cart item
-- `DELETE /api/v1/cart/items/:id` - Remove cart item
-- `DELETE /api/v1/cart` - Clear cart
+## 🔍 Error Tracking (Sentry)
 
-### Orders
-- `POST /api/v1/orders` - Create new order
-- `GET /api/v1/orders/my` - Get user's orders
-- `GET /api/v1/orders` - Get all orders (staff/admin)
-- `GET /api/v1/orders/:id` - Get order by ID
-- `PATCH /api/v1/orders/:id/status` - Update status (staff)
-- `POST /api/v1/orders/:id/cancel` - Cancel order
+Sentry is integrated for both backend and web frontend (free tier):
 
-### Staff (Admin only)
-- `GET /api/v1/staff` - Get all staff
-- `POST /api/v1/staff` - Create staff account
-- `PUT /api/v1/staff/:id` - Update staff
-- `DELETE /api/v1/staff/:id` - Delete staff
+- **Backend**: `@sentry/node` with Express integration, profiling, and performance monitoring
+- **Web**: `@sentry/react` with browser tracing, replay on error, and source maps
+
+To enable, add your Sentry DSN to `backend/.env`:
+```
+SENTRY_DSN="https://your-dsn@sentry.io/project-id"
+```
+
+For the web frontend, set `VITE_SENTRY_DSN` in your environment or `.env` file.
 
 ## 🔒 Security
 
@@ -211,6 +211,11 @@ pnpm build
 ### Redis (Upstash)
 - Free tier: 256MB
 - Create a Redis database and use the connection URL
+
+### Error Tracking (Sentry)
+- Free tier: 5K transactions/month, 10K errors/month
+- Create a project at [sentry.io](https://sentry.io)
+- Copy the DSN to your environment variables
 
 ## 📖 Documentation
 

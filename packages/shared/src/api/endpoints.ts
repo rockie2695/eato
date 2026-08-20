@@ -17,7 +17,6 @@ import type {
   RefreshRequest,
   User,
   MenuCategory,
-  MenuItem,
   MenuItemWithCategory,
   Cart,
   AddToCartRequest,

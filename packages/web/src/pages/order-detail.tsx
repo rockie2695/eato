@@ -5,20 +5,19 @@
  * Displays order items, status timeline, and payment info.
  */
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
-  Clock,
   CheckCircle,
   Circle,
   ChefHat,
-  Bell,
   CreditCard,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { PageLoading } from '@/components/ui/page-loading';
 import { useOrderStore } from '@/stores';
 import { useSocket } from '@/hooks/useSocket';
 import { formatPrice, formatDate } from '@eato/shared/utils';
@@ -56,17 +55,11 @@ export function OrderDetailPage() {
         updateOrderStatus(event.orderId, event.status);
       }
     });
-    return unsubscribe;
+    return () => { unsubscribe(); };
   }, [id]);
 
   if (isLoading || !currentOrder) {
-    return (
-      <div className="container px-4 py-8">
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
-      </div>
-    );
+    return <PageLoading text="Loading order details..." />;
   }
 
   const order = currentOrder;
@@ -157,7 +150,7 @@ export function OrderDetailPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {order.items.map((item) => (
+            {order.items.map((item: { id: string; menuItem?: { name: string }; quantity: number; price: number; specialInstructions?: string }) => (
               <div
                 key={item.id}
                 className="flex justify-between items-center py-2 border-b last:border-0"

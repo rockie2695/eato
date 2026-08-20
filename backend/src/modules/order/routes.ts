@@ -30,8 +30,42 @@ export function setSocketIO(socketIO: Server) {
 router.use(requireAuth);
 
 /**
- * POST /
- * Create a new order.
+ * @swagger
+ * /orders:
+ *   post:
+ *     tags: [Orders]
+ *     summary: Create a new order
+ *     description: |
+ *       Create a new order with items. Clears the cart on success.
+ *       For online payments, returns a Stripe session ID.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateOrderRequest'
+ *     responses:
+ *       201:
+ *         description: Order created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Invalid items or unavailable items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Authentication required
+ *       429:
+ *         description: Rate limit exceeded
  */
 router.post(
   '/',
@@ -54,8 +88,47 @@ router.post(
 );
 
 /**
- * GET /my
- * Get current user's orders.
+ * @swagger
+ * /orders/my:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get current user's orders
+ *     description: Retrieve the authenticated user's order history.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, confirmed, preparing, ready, served, completed, cancelled]
+ *         description: Filter by order status
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: Paginated list of orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/PaginatedResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Order'
+ *       401:
+ *         description: Authentication required
  */
 router.get('/my', async (req: AuthRequest, res, next) => {
   try {
@@ -72,8 +145,48 @@ router.get('/my', async (req: AuthRequest, res, next) => {
 });
 
 /**
- * GET /
- * Get all orders (staff/admin only).
+ * @swagger
+ * /orders:
+ *   get:
+ *     tags: [Orders - Staff]
+ *     summary: Get all orders
+ *     description: Retrieve all orders. Requires staff, kitchen, or admin role.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, confirmed, preparing, ready, served, completed, cancelled]
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Paginated list of all orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/PaginatedResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Order'
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Staff role required
  */
 router.get(
   '/',
@@ -94,8 +207,36 @@ router.get(
 );
 
 /**
- * GET /:id
- * Get order by ID.
+ * @swagger
+ * /orders/{id}:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get order by ID
+ *     description: Retrieve a specific order with its items.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       401:
+ *         description: Authentication required
+ *       404:
+ *         description: Order not found
  */
 router.get('/:id', async (req: AuthRequest, res, next) => {
   try {
@@ -107,8 +248,54 @@ router.get('/:id', async (req: AuthRequest, res, next) => {
 });
 
 /**
- * PATCH /:id/status
- * Update order status (staff/admin only).
+ * @swagger
+ * /orders/{id}/status:
+ *   patch:
+ *     tags: [Orders - Staff]
+ *     summary: Update order status
+ *     description: |
+ *       Update the status of an order. Requires staff, kitchen, or admin role.
+ *
+ *       Valid status transitions:
+ *       - pending → confirmed, cancelled
+ *       - confirmed → preparing, cancelled
+ *       - preparing → ready
+ *       - ready → served
+ *       - served → completed
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateOrderStatusRequest'
+ *     responses:
+ *       200:
+ *         description: Order updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Invalid status transition
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Staff role required
+ *       404:
+ *         description: Order not found
  */
 router.patch(
   '/:id/status',
@@ -129,8 +316,41 @@ router.patch(
 );
 
 /**
- * POST /:id/cancel
- * Cancel an order (customer only).
+ * @swagger
+ * /orders/{id}/cancel:
+ *   post:
+ *     tags: [Orders]
+ *     summary: Cancel an order
+ *     description: |
+ *       Cancel an order. Only allowed for the order owner before the order is confirmed.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Order cancelled
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Order cannot be cancelled at this stage
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Not the order owner
+ *       404:
+ *         description: Order not found
  */
 router.post('/:id/cancel', async (req: AuthRequest, res, next) => {
   try {

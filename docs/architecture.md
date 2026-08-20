@@ -21,10 +21,13 @@ eato/
 │   ├── web/                    # Vite + React web app
 │   │   ├── src/
 │   │   │   ├── components/    # UI components (shadcn/ui)
+│   │   │   │   ├── ui/        # Button, Card, Skeleton, Spinner, etc.
+│   │   │   │   └── layout/    # Header, Footer
 │   │   │   ├── pages/         # Route pages
 │   │   │   ├── hooks/         # Custom React hooks
 │   │   │   ├── stores/        # Web-specific store setup
-│   │   │   └── lib/           # Utilities and API setup
+│   │   │   ├── lib/           # Utilities and API setup
+│   │   │   └── sentry.ts      # Sentry initialization
 │   │   └── package.json
 │   │
 │   └── mobile/                 # Expo React Native app
@@ -38,6 +41,12 @@ eato/
 ├── backend/                    # Express API server
 │   ├── src/
 │   │   ├── config/            # Environment and service config
+│   │   │   ├── index.ts       # Environment validation
+│   │   │   ├── database.ts    # Prisma client
+│   │   │   ├── redis.ts       # Redis client
+│   │   │   ├── stripe.ts      # Stripe integration
+│   │   │   ├── swagger.ts     # OpenAPI spec
+│   │   │   └── sentry.ts      # Sentry initialization
 │   │   ├── middleware/         # Auth, validation, error handling
 │   │   ├── modules/           # Feature modules (auth, menu, etc.)
 │   │   └── socket/            # Socket.io event handlers
@@ -73,6 +82,12 @@ eato/
 │  PG   │  │  Redis  │  │Stripe │
 │  DB   │  │  Cache  │  │Payment│
 └───────┘  └─────────┘  └───────┘
+                 │
+          ┌──────▼──────┐
+          │   Sentry    │
+          │ (Error +    │
+          │  Perf)      │
+          └─────────────┘
 ```
 
 ## Shared Package
@@ -116,17 +131,18 @@ modules/
 └── feature/
     ├── validation.ts   # Zod schemas for request validation
     ├── service.ts      # Business logic
-    └── routes.ts       # Express route handlers
+    └── routes.ts       # Express route handlers (with Swagger annotations)
 ```
 
 ### Middleware Stack
 
-1. **Security**: Helmet, CORS
-2. **Parsing**: JSON, URL-encoded, cookies
-3. **Rate Limiting**: Redis-backed, per-route configurable
-4. **Authentication**: JWT verification
-5. **Validation**: Zod schema validation
-6. **Error Handling**: Global error formatter
+1. **Sentry**: Request handler + error handler
+2. **Security**: Helmet, CORS
+3. **Parsing**: JSON, URL-encoded, cookies
+4. **Rate Limiting**: Redis-backed, per-route configurable
+5. **Authentication**: JWT verification
+6. **Validation**: Zod schema validation
+7. **Error Handling**: Global error formatter
 
 ### Real-time Communication
 
@@ -139,6 +155,21 @@ Staff Dashboard ◄──order:new────────────┘
 Kitchen Display ◄──order:statusUpdate───┘
 ```
 
+### API Documentation
+
+Swagger / OpenAPI 3.0 documentation is auto-generated from route annotations:
+
+- **Swagger UI**: `/api/docs` (interactive API explorer)
+- **JSON Spec**: `/api/docs.json` (machine-readable)
+
+### Error Monitoring
+
+Sentry tracks errors and performance across both backend and frontend:
+
+- **Backend**: Express integration, Node.js profiling, performance traces
+- **Frontend**: Browser tracing, error replay, source maps
+- **Free Tier**: 5K transactions/month, 10K errors/month
+
 ## Database Schema
 
 Key relationships:
@@ -147,6 +178,18 @@ Key relationships:
 - **User** → has many **Orders** → has many **OrderItems**
 - **MenuCategory** → has many **MenuItems**
 - **OrderItem** references **MenuItem** (with price snapshot)
+
+## Loading States
+
+The web frontend uses skeleton loaders and spinners for better UX:
+
+- **Skeleton**: Animated placeholder matching content shape
+- **Spinner**: Circular loading indicator with optional label
+- **PageLoading**: Full-page centered loader
+- **MenuSkeleton**: Grid layout skeleton for menu page
+- **OrderSkeleton**: Card list skeleton for orders page
+- **CartSkeleton**: Two-column layout skeleton for cart page
+- **HomeSkeleton**: Hero + features + grid skeleton for landing page
 
 ## Deployment Architecture
 
@@ -168,4 +211,9 @@ Key relationships:
    │  Supabase   │ │Redis│ │   Stripe    │
    │ (PostgreSQL)│ │     │ │ (Payments)  │
    └─────────────┘ └─────┘ └─────────────┘
+          │
+   ┌──────▼──────┐
+   │   Sentry    │
+   │ (Monitoring)│
+   └─────────────┘
 ```

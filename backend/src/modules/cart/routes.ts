@@ -18,8 +18,26 @@ const router = Router();
 router.use(requireAuth);
 
 /**
- * GET /
- * Get current user's cart.
+ * @swagger
+ * /cart:
+ *   get:
+ *     tags: [Cart]
+ *     summary: Get current user's cart
+ *     description: Retrieve the authenticated user's shopping cart with items.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User's cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Cart'
+ *       401:
+ *         description: Authentication required
  */
 router.get('/', async (req: AuthRequest, res, next) => {
   try {
@@ -31,8 +49,34 @@ router.get('/', async (req: AuthRequest, res, next) => {
 });
 
 /**
- * POST /items
- * Add an item to the cart.
+ * @swagger
+ * /cart/items:
+ *   post:
+ *     tags: [Cart]
+ *     summary: Add item to cart
+ *     description: Add a menu item to the cart. If item exists, increments quantity.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AddToCartRequest'
+ *     responses:
+ *       200:
+ *         description: Updated cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Cart'
+ *       401:
+ *         description: Authentication required
+ *       404:
+ *         description: Menu item not found
  */
 router.post('/items', async (req: AuthRequest, res, next) => {
   try {
@@ -50,8 +94,42 @@ router.post('/items', async (req: AuthRequest, res, next) => {
 });
 
 /**
- * PUT /items/:id
- * Update a cart item's quantity or instructions.
+ * @swagger
+ * /cart/items/{id}:
+ *   put:
+ *     tags: [Cart]
+ *     summary: Update cart item
+ *     description: Update quantity or special instructions for a cart item.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Cart item ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateCartItemRequest'
+ *     responses:
+ *       200:
+ *         description: Updated cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Cart'
+ *       401:
+ *         description: Authentication required
+ *       404:
+ *         description: Cart item not found
  */
 router.put('/items/:id', async (req: AuthRequest, res, next) => {
   try {
@@ -69,8 +147,34 @@ router.put('/items/:id', async (req: AuthRequest, res, next) => {
 });
 
 /**
- * DELETE /items/:id
- * Remove an item from the cart.
+ * @swagger
+ * /cart/items/{id}:
+ *   delete:
+ *     tags: [Cart]
+ *     summary: Remove item from cart
+ *     description: Remove a specific item from the cart.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: Cart item ID
+ *     responses:
+ *       200:
+ *         description: Updated cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Cart'
+ *       401:
+ *         description: Authentication required
  */
 router.delete('/items/:id', async (req: AuthRequest, res, next) => {
   try {
@@ -82,8 +186,19 @@ router.delete('/items/:id', async (req: AuthRequest, res, next) => {
 });
 
 /**
- * DELETE /
- * Clear all items from the cart.
+ * @swagger
+ * /cart:
+ *   delete:
+ *     tags: [Cart]
+ *     summary: Clear cart
+ *     description: Remove all items from the cart.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       204:
+ *         description: Cart cleared
+ *       401:
+ *         description: Authentication required
  */
 router.delete('/', async (req: AuthRequest, res, next) => {
   try {

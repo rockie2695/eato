@@ -7,6 +7,20 @@ Development: http://localhost:5000/api/v1
 Production:  https://your-backend.onrender.com/api/v1
 ```
 
+## Swagger Documentation
+
+Interactive API documentation is available via Swagger UI:
+
+- **Swagger UI**: http://localhost:5000/api/docs
+- **JSON Spec**: http://localhost:5000/api/docs.json
+
+The Swagger docs include:
+- Full endpoint documentation for all routes
+- Request/response schemas (OpenAPI 3.0)
+- Authentication setup (Bearer token)
+- Example requests and responses
+- Error response formats
+
 ## Authentication
 
 All protected routes require a Bearer token in the Authorization header:
@@ -406,3 +420,19 @@ Stripe webhook endpoint for payment status updates.
     "updatedAt": "2024-01-01T00:00:00Z"
   }
   ```
+
+---
+
+## Error Monitoring (Sentry)
+
+Sentry is integrated for error tracking and performance monitoring:
+
+- **Backend**: Captures unhandled exceptions, performance traces
+- **Frontend**: Captures React errors, browser performance, replays on error
+
+Errors are reported to Sentry when `SENTRY_DSN` (backend) or `VITE_SENTRY_DSN` (frontend) is configured.
+
+Free tier limits:
+- 5,000 transactions/month
+- 10,000 errors/month
+- 30-day retention

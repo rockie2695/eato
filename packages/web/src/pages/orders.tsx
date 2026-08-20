@@ -7,13 +7,14 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Clock, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import { Package, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { OrderSkeleton } from '@/components/ui/order-skeleton';
 import { useOrderStore, useAuthStore } from '@/stores';
 import { useSocket } from '@/hooks/useSocket';
-import { formatPrice, formatDate, formatRelativeTime } from '@eato/shared/utils';
+import { formatPrice, formatRelativeTime } from '@eato/shared/utils';
 import { ORDER_STATUS_CONFIG } from '@eato/shared/constants';
 import type { Order, OrderStatus } from '@eato/shared/types';
 
@@ -37,12 +38,12 @@ export function OrdersPage() {
     const unsubscribe = onOrderUpdate((event) => {
       updateOrderStatus(event.orderId, event.status);
     });
-    return unsubscribe;
+    return () => { unsubscribe(); };
   }, []);
 
   const filteredOrders = filter === 'all'
     ? orders
-    : orders.filter((o) => o.status === filter);
+    : orders.filter((o: { status: string }) => o.status === filter);
 
   const statusFilters: Array<{ value: OrderStatus | 'all'; label: string }> = [
     { value: 'all', label: 'All Orders' },
@@ -84,9 +85,7 @@ export function OrdersPage() {
 
       {/* Orders List */}
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
+        <OrderSkeleton />
       ) : filteredOrders.length === 0 ? (
         <div className="text-center py-12">
           <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -94,7 +93,7 @@ export function OrdersPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredOrders.map((order) => (
+          {filteredOrders.map((order: Order) => (
             <OrderCard
               key={order.id}
               order={order}

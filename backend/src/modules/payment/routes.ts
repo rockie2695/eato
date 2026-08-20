@@ -12,11 +12,51 @@ import { prisma } from '../../config/database.js';
 const router = Router();
 
 /**
- * POST /webhook
- * Stripe webhook endpoint.
- * Handles checkout.session.completed and other payment events.
+ * @swagger
+ * /payments/webhook:
+ *   post:
+ *     tags: [Payments]
+ *     summary: Stripe webhook endpoint
+ *     description: |
+ *       Handles Stripe payment events (checkout.session.completed, payment_intent.payment_failed).
  *
- * IMPORTANT: This route must use raw body parser, not JSON.
+ *       **Note:** This endpoint requires raw body for signature verification.
+ *       Do not send this request through the JSON body parser.
+ *     parameters:
+ *       - in: header
+ *         name: stripe-signature
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Stripe webhook signature
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             description: Stripe event object
+ *     responses:
+ *       200:
+ *         description: Webhook received successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 received:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Missing or invalid signature
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Missing stripe-signature header
  */
 router.post(
   '/webhook',

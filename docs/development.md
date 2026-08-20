@@ -76,6 +76,7 @@ When modifying `@eato/shared`:
 1. Edit files in `backend/src/`
 2. Server auto-restarts (tsx watch)
 3. Test with Postman or frontend
+4. API docs auto-update at http://localhost:5000/api/docs
 
 ### Database Changes
 
@@ -140,10 +141,14 @@ export function Component({ prop1, prop2 = 0 }: ComponentProps) {
 3. **Cart**: Add items → Update quantity → Remove → Clear
 4. **Orders**: Create order → Track status → View history
 5. **Admin**: Manage menu → Manage staff → Customize theme
+6. **Loading States**: Verify skeleton loaders appear during data fetching
+7. **Swagger**: Visit http://localhost:5000/api/docs to explore the API
 
 ### API Testing
 
-Use the API reference in `docs/api.md` with tools like:
+Use the Swagger UI at http://localhost:5000/api/docs for interactive testing.
+
+Or use tools like:
 - Postman
 - Insomnia
 - cURL
@@ -254,3 +259,63 @@ pnpm prisma:generate
   }
 }
 ```
+
+## Loading States
+
+The web frontend provides multiple loading indicators:
+
+### Available Components
+
+| Component | Use Case |
+|-----------|----------|
+| `Spinner` | Inline loading indicator with optional label |
+| `Skeleton` | Animated placeholder matching content shape |
+| `PageLoading` | Full-page centered loader with icon |
+| `MenuSkeleton` | Grid layout skeleton for menu page |
+| `OrderSkeleton` | Card list skeleton for orders page |
+| `CartSkeleton` | Two-column layout skeleton for cart page |
+| `HomeSkeleton` | Hero + features + grid skeleton |
+
+### Usage
+
+```tsx
+import { Spinner } from '@/components/ui/spinner';
+import { MenuSkeleton } from '@/components/ui/menu-skeleton';
+
+// Inline spinner
+<Spinner size="lg" label="Loading..." />
+
+// Full page skeleton
+if (loading) return <MenuSkeleton />;
+```
+
+## API Documentation
+
+Swagger UI is available at http://localhost:5000/api/docs when the backend is running.
+
+To add new endpoints to the docs, add `@swagger` JSDoc annotations to route files:
+
+```typescript
+/**
+ * @swagger
+ * /menu/items:
+ *   get:
+ *     tags: [Menu]
+ *     summary: Get menu items
+ *     responses:
+ *       200:
+ *         description: List of items
+ */
+router.get('/items', async (req, res) => { ... });
+```
+
+## Error Monitoring
+
+Sentry is configured for error tracking (free tier):
+
+- **Backend**: Errors automatically reported when `SENTRY_DSN` is set
+- **Frontend**: Errors automatically reported when `VITE_SENTRY_DSN` is set
+- **Performance**: Traces sampled at 20% in production
+- **Replay**: Full replay captured on frontend errors
+
+To test Sentry in development, temporarily enable it in `packages/web/src/sentry.ts`.

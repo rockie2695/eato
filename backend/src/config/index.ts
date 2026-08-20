@@ -32,6 +32,9 @@ const configSchema = z.object({
   // Frontend URLs (for redirects)
   WEB_URL: z.string().url().default('http://localhost:5173'),
   APP_URL: z.string().url().default('http://localhost:8081'),
+
+  // Sentry (optional - leave empty to disable)
+  SENTRY_DSN: z.string().optional().default(''),
 });
 
 export type Config = z.infer<typeof configSchema>;

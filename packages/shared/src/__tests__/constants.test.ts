@@ -23,7 +23,7 @@ describe('ORDER_STATUS_CONFIG', () => {
     const statuses = [
       'pending', 'confirmed', 'preparing', 'ready',
       'served', 'completed', 'cancelled',
-    ];
+    ] as const;
     statuses.forEach((status) => {
       expect(ORDER_STATUS_CONFIG[status]).toBeDefined();
       expect(ORDER_STATUS_CONFIG[status].label).toBeTruthy();

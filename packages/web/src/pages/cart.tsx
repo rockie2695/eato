@@ -19,11 +19,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Spinner } from '@/components/ui/spinner';
 import { useCartStore, useAuthStore } from '@/stores';
 import { orderApi } from '@/lib/api';
 import { formatPrice } from '@eato/shared/utils';
-import type { PaymentMethod } from '@eato/shared/types';
+import type { PaymentMethod, CartItem } from '@eato/shared/types';
 
 export function CartPage() {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export function CartPage() {
         tableNumber: tableNumber || undefined,
         paymentMethod,
         notes: notes || undefined,
-        items: items.map((item) => ({
+        items: items.map((item: CartItem) => ({
           menuItemId: item.menuItemId,
           quantity: item.quantity,
           specialInstructions: item.specialInstructions,
@@ -108,7 +108,7 @@ export function CartPage() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
-          {items.map((item) => (
+          {items.map((item: CartItem) => (
             <Card key={item.id}>
               <CardContent className="p-4">
                 <div className="flex gap-4">
@@ -269,7 +269,7 @@ export function CartPage() {
                 onClick={handleCheckout}
                 disabled={isCheckingOut}
               >
-                {isCheckingOut ? 'Processing...' : 'Place Order'}
+                {isCheckingOut ? <Spinner size="sm" label="Processing..." /> : 'Place Order'}
               </Button>
             </CardContent>
           </Card>

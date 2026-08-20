@@ -46,6 +46,8 @@ interface CartActions {
   setTableNumber: (tableNumber: number | null) => void;
   /** Clear error message */
   clearError: () => void;
+  /** Persist cart to local storage */
+  _persistCart: () => Promise<void>;
 }
 
 export type CartStore = CartState & CartActions;

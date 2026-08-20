@@ -10,6 +10,7 @@ import { ArrowRight, Star, Clock, UtensilsCrossed, Smartphone, CreditCard } from
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { HomeSkeleton } from '@/components/ui/home-skeleton';
 import { menuApi } from '@/lib/api';
 import { formatPrice, formatPrepTime } from '@eato/shared/utils';
 import type { MenuItemWithCategory } from '@eato/shared/types';
@@ -17,10 +18,18 @@ import type { MenuItemWithCategory } from '@eato/shared/types';
 export function HomePage() {
   const navigate = useNavigate();
   const [featuredItems, setFeaturedItems] = useState<MenuItemWithCategory[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    menuApi.getFeatured().then(setFeaturedItems).catch(console.error);
+    menuApi.getFeatured()
+      .then(setFeaturedItems)
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return <HomeSkeleton />;
+  }
 
   return (
     <div className="flex flex-col">

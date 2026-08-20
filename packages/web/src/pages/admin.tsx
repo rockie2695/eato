@@ -25,11 +25,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
 import { useThemeStore } from '@/stores';
 import { menuApi, staffApi } from '@/lib/api';
 import { formatPrice } from '@eato/shared/utils';
-import type { MenuItemWithCategory, MenuCategory, User } from '@eato/shared/types';
+import type { MenuItemWithCategory, User } from '@eato/shared/types';
 
 type AdminTab = 'overview' | 'menu' | 'staff' | 'orders' | 'theme';
 
@@ -44,7 +44,6 @@ const THEME_COLORS = [
 
 export function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
-  const { primaryColor, setPrimaryColor } = useThemeStore();
 
   const tabs: Array<{ id: AdminTab; label: string; icon: typeof LayoutDashboard }> = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -131,7 +130,6 @@ function OverviewTab() {
 
 function MenuTab() {
   const [items, setItems] = useState<MenuItemWithCategory[]>([]);
-  const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -140,12 +138,8 @@ function MenuTab() {
 
   async function loadData() {
     try {
-      const [itemsRes, cats] = await Promise.all([
-        menuApi.getItems({ limit: 50 }),
-        menuApi.getCategories(),
-      ]);
+      const itemsRes = await menuApi.getItems({ limit: 50 });
       setItems(itemsRes.data);
-      setCategories(cats);
     } catch (error) {
       console.error('Failed to load menu:', error);
     } finally {
@@ -180,7 +174,7 @@ function MenuTab() {
   }
 
   if (loading) {
-    return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
+    return <div className="flex justify-center py-12"><Spinner size="lg" label="Loading menu items..." /></div>;
   }
 
   return (
@@ -268,7 +262,7 @@ function StaffTab() {
   }
 
   if (loading) {
-    return <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
+    return <div className="flex justify-center py-12"><Spinner size="lg" label="Loading staff..." /></div>;
   }
 
   return (
@@ -326,7 +320,12 @@ function OrdersTab() {
 }
 
 function ThemeTab() {
-  const { primaryColor, setPrimaryColor, theme, setTheme } = useThemeStore();
+  const { primaryColor, setPrimaryColor, theme, setTheme } = useThemeStore() as {
+    primaryColor: string;
+    setPrimaryColor: (color: string) => void;
+    theme: string;
+    setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  };
 
   return (
     <div className="space-y-6">

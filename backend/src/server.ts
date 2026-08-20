@@ -11,8 +11,12 @@ import { connectDatabase, disconnectDatabase } from './config/database.js';
 import { redis } from './config/redis.js';
 import { initSocketIO } from './socket/index.js';
 import { setSocketIO } from './modules/order/routes.js';
+import { initSentry, Sentry } from './config/sentry.js';
 
 async function main() {
+  // ── Initialize Sentry ────────────────────────────────────
+  initSentry();
+
   // ── Connect to Database ───────────────────────────────────
   await connectDatabase();
 

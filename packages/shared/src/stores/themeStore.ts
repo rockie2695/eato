@@ -43,6 +43,10 @@ interface ThemeActions {
   setSystemDark: (isDark: boolean) => void;
   /** Load saved theme from storage */
   loadTheme: () => Promise<void>;
+  /** Persist theme to local storage */
+  _persistTheme: () => Promise<void>;
+  /** Apply CSS custom properties to document */
+  _applyThemeVars: () => void;
 }
 
 export type ThemeStore = ThemeState & ThemeActions;
