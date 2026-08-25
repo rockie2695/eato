@@ -20,17 +20,17 @@ eato/
 | Layer | Technology |
 |-------|-----------|
 | **Monorepo** | pnpm workspaces |
-| **Web Frontend** | Vite + React 18 + TypeScript + Tailwind CSS |
-| **Mobile Frontend** | React Native (Expo) + TypeScript |
+| **Web Frontend** | Vite 8 + React 19 + TypeScript 7 + Tailwind CSS 4 |
+| **Mobile Frontend** | React Native (Expo 57) + TypeScript 7 |
 | **Shared Code** | API client, TypeScript types, Zustand stores |
-| **Backend** | Node.js + Express + TypeScript |
-| **Database** | PostgreSQL + Prisma ORM |
-| **Cache** | Redis (ioredis) |
+| **Backend** | Node.js + Express 5 + TypeScript 7 |
+| **Database** | PostgreSQL + Prisma 7 |
+| **Cache** | Redis (ioredis 6) |
 | **Real-time** | Socket.io |
 | **Auth** | JWT (Access + Refresh tokens) |
-| **Payment** | Stripe |
+| **Payment** | Stripe 22 |
 | **API Docs** | Swagger / OpenAPI 3.0 |
-| **Error Tracking** | Sentry (free tier) |
+| **Error Tracking** | Sentry 10 (free tier) |
 | **Monitoring** | Sentry Performance + Profiling |
 
 ## 🚀 Quick Start
@@ -62,16 +62,25 @@ cp backend/.env.example backend/.env
 ### 3. Database Setup
 
 ```bash
-# Generate Prisma client
 cd backend
+
+# Generate Prisma client (types + query builder from schema.prisma)
 pnpm prisma:generate
 
-# Run migrations
+# Run migrations (creates tables in database from schema changes)
 pnpm prisma:migrate
 
-# Seed the database
+# Seed the database (populates demo users, menu items, categories)
 pnpm prisma:seed
 ```
+
+**What each command does:**
+
+| Command | Purpose | When to run |
+|---------|---------|-------------|
+| `prisma:generate` | Generates TypeScript types and query client from `schema.prisma` | After changing schema |
+| `prisma:migrate` | Creates SQL migration, applies to database, regenerates client | After changing schema |
+| `prisma:seed` | Populates database with demo data (users, menu, categories) | Once after first migration |
 
 ### 4. Start Development
 
@@ -241,7 +250,21 @@ For the web frontend, set `VITE_SENTRY_DSN` in your environment or `.env` file.
 
 ## 🚢 Deployment
 
-### Web (Vercel/Netlify)
+### Web (Vercel)
+
+A `vercel.json` is included at the project root. Vercel will:
+1. Install all workspace dependencies
+2. Build only `@eato/web` (shared package is compiled inline by Vite)
+
+**Vercel Settings:**
+- **Root Directory**: `/` (or leave empty)
+- **Framework**: Vite (auto-detected)
+- **Build Command**: `pnpm --filter @eato/web build`
+- **Output Directory**: `packages/web/dist`
+
+No need to build the shared package separately — Vite resolves `@eato/shared/*` directly from source.
+
+### Web (Netlify)
 ```bash
 cd packages/web
 pnpm build
@@ -255,7 +278,7 @@ pnpm build
 # Deploy with start command: node dist/server.js
 ```
 
-### Database (Supabase)
+### Database (Supabase/Neon)
 - Free tier: 500MB PostgreSQL
 - Create a project and use the connection string
 

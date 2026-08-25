@@ -22,8 +22,8 @@
     "db:seed": "pnpm --filter @eato/backend prisma:seed"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0",
-    "typescript": "^5.7.0"
+    "concurrently": "^10.0.5",
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=18.0.0",

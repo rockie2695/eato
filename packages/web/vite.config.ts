@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 
+const sharedPath = path.resolve(__dirname, '../shared/src');
+
 export default defineConfig({
   plugins: [
     react(),
@@ -15,7 +17,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@eato/shared': path.resolve(__dirname, '../shared/src'),
+      // Map all @eato/shared/* subpath exports to source
+      '@eato/shared': sharedPath,
+      '@eato/shared/api': path.join(sharedPath, 'api'),
+      '@eato/shared/types': path.join(sharedPath, 'types'),
+      '@eato/shared/stores': path.join(sharedPath, 'stores'),
+      '@eato/shared/utils': path.join(sharedPath, 'utils'),
+      '@eato/shared/constants': path.join(sharedPath, 'constants'),
     },
   },
   server: {

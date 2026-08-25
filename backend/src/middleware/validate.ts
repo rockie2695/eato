@@ -6,13 +6,13 @@
  */
 
 import type { Request, Response, NextFunction } from 'express';
-import { type ZodSchema } from 'zod';
+import { type ZodType } from 'zod';
 
 /**
  * Create a validation middleware for a given Zod schema.
  * @param schema - Zod schema to validate against
  */
-export function validate(schema: ZodSchema) {
+export function validate(schema: ZodType) {
   return (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body);
 

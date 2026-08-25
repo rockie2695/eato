@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm --filter @eato/web build",
+  "outputDirectory": "packages/web/dist",
+  "framework": "vite",
+  "installCommand": "pnpm install"
+}

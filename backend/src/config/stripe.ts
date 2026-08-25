@@ -10,7 +10,7 @@ import { config } from './index.js';
 
 /** Stripe SDK instance */
 export const stripe = new Stripe(config.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-12-18.acacia' as Stripe.LatestApiVersion,
+  apiVersion: '2025-05-21.basil' as Stripe.LatestApiVersion,
   typescript: true,
 });
 

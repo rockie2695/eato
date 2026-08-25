@@ -12,7 +12,7 @@ import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import { config } from './config/index.js';
 import { swaggerSpec } from './config/swagger.js';
-import { Sentry } from './config/sentry.js';
+import { setupExpressErrorHandler } from './config/sentry.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './modules/auth/routes.js';
 import menuRoutes from './modules/menu/routes.js';
@@ -85,7 +85,7 @@ app.use((_req, res) => {
 });
 
 // ── Sentry Error Handler ──────────────────────────────────────
-Sentry.setupExpressErrorHandler(app);
+setupExpressErrorHandler(app);
 
 // ── Error Handler ──────────────────────────────────────────────
 app.use(errorHandler);
