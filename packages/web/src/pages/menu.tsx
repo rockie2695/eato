@@ -157,9 +157,8 @@ export function MenuPage() {
           >
             <div className="pl-4">
               <Search
-                className={`h-5 w-5 transition-colors duration-300 ${
-                  searchFocused ? 'text-primary' : 'text-muted-foreground'
-                }`}
+                className={`h-5 w-5 transition-colors duration-300 ${searchFocused ? 'text-primary' : 'text-muted-foreground'
+                  }`}
               />
             </div>
             <input
@@ -346,9 +345,8 @@ export function MenuPage() {
                         </div>
                       ) : (
                         <Button
-                          className={`w-full rounded-xl font-semibold transition-all duration-300 ${
-                            isAdding ? 'scale-95' : ''
-                          }`}
+                          className={`w-full rounded-xl font-semibold transition-all duration-300 ${isAdding ? 'scale-95' : ''
+                            }`}
                           onClick={() => handleAddItem(item)}
                           disabled={!item.isAvailable}
                           variant="gradient"

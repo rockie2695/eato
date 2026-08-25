@@ -92,9 +92,8 @@ function QuantityControl({
                    active:scale-90"
       >
         <Minus
-          className={`h-4 w-4 transition-transform duration-200 ${
-            bouncing === '-' ? 'scale-75' : 'scale-100'
-          }`}
+          className={`h-4 w-4 transition-transform duration-200 ${bouncing === '-' ? 'scale-75' : 'scale-100'
+            }`}
         />
       </button>
       <span className="w-8 text-center font-semibold tabular-nums text-lg">
@@ -109,9 +108,8 @@ function QuantityControl({
                    hover:bg-primary/90 transition-all duration-200 active:scale-90 shadow-sm"
       >
         <Plus
-          className={`h-4 w-4 transition-transform duration-200 ${
-            bouncing === '+' ? 'scale-75' : 'scale-100'
-          }`}
+          className={`h-4 w-4 transition-transform duration-200 ${bouncing === '+' ? 'scale-75' : 'scale-100'
+            }`}
         />
       </button>
     </div>
@@ -140,11 +138,10 @@ function CartItemRow({
 
   return (
     <Card
-      className={`group overflow-hidden transition-all duration-300 ${
-        isRemoving
+      className={`group overflow-hidden transition-all duration-300 ${isRemoving
           ? 'opacity-0 scale-95 -translate-x-4'
           : 'opacity-100 translate-y-0'
-      }`}
+        }`}
       style={{
         animationDelay: `${index * 0.06}s`,
         animation: 'fade-in-up 0.5s ease-out both',
@@ -229,11 +226,10 @@ function PaymentToggle({
           key={method}
           onClick={() => onChange(method)}
           className={`relative flex items-center justify-center gap-2 rounded-lg py-2.5 px-4 text-sm font-medium
-                     transition-all duration-300 ${
-                       value === method
-                         ? 'bg-background text-foreground shadow-sm'
-                         : 'text-muted-foreground hover:text-foreground'
-                     }`}
+                     transition-all duration-300 ${value === method
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
+            }`}
         >
           {method === 'cash' ? (
             <Banknote className="h-4 w-4" />
@@ -312,152 +308,154 @@ export function CartPage() {
 
   /* ── Populated ── */
   return (
-    <div className="container max-w-6xl px-4 py-8 page-transition">
-      {/* Back + Title */}
-      <div className="flex items-center gap-4 mb-8">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate('/menu')}
-          className="group/btn"
-        >
-          <ArrowLeft className="h-5 w-5 transition-transform group-hover/btn:-translate-x-1" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Your Cart</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {itemCount} {itemCount === 1 ? 'item' : 'items'} waiting for you
-          </p>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-8 items-start">
-        {/* ──────────── Items Column ──────────── */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="stagger-children">
-            {items.map((item: CartItem, i) => (
-              <CartItemRow
-                key={item.id}
-                item={item}
-                index={i}
-                onQuantityChange={(qty) => updateQuantity(item.id, qty)}
-                onRemove={() => removeItem(item.id)}
-              />
-            ))}
+    <div className="flex justify-center">
+      <div className="container max-w-6xl px-4 py-8 page-transition">
+        {/* Back + Title */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/menu')}
+            className="group/btn"
+          >
+            <ArrowLeft className="h-5 w-5 transition-transform group-hover/btn:-translate-x-1" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Your Cart</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {itemCount} {itemCount === 1 ? 'item' : 'items'} waiting for you
+            </p>
           </div>
+        </div>
 
-          {/* Clear Cart */}
-          {showClearConfirm ? (
-            <div className="flex items-center justify-center gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5 animate-fade-in">
-              <span className="text-sm text-foreground">Clear your entire cart?</span>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => {
-                  clearCart();
-                  setShowClearConfirm(false);
-                }}
-              >
-                Yes, clear
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowClearConfirm(false)}
-              >
-                Cancel
-              </Button>
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          {/* ──────────── Items Column ──────────── */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="stagger-children">
+              {items.map((item: CartItem, i) => (
+                <CartItemRow
+                  key={item.id}
+                  item={item}
+                  index={i}
+                  onQuantityChange={(qty) => updateQuantity(item.id, qty)}
+                  onRemove={() => removeItem(item.id)}
+                />
+              ))}
             </div>
-          ) : (
-            <button
-              onClick={() => setShowClearConfirm(true)}
-              className="w-full py-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground
+
+            {/* Clear Cart */}
+            {showClearConfirm ? (
+              <div className="flex items-center justify-center gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5 animate-fade-in">
+                <span className="text-sm text-foreground">Clear your entire cart?</span>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    clearCart();
+                    setShowClearConfirm(false);
+                  }}
+                >
+                  Yes, clear
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowClearConfirm(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowClearConfirm(true)}
+                className="w-full py-3 rounded-xl border border-dashed border-border text-sm text-muted-foreground
                          hover:text-destructive hover:border-destructive/40 hover:bg-destructive/5
                          transition-all duration-300"
-            >
-              Clear Cart
-            </button>
-          )}
-        </div>
-
-        {/* ──────────── Summary Column ──────────── */}
-        <div className="lg:sticky lg:top-24">
-          <Card
-            className="glass-strong overflow-hidden animate-fade-in-up"
-            style={{ animationDelay: '0.15s' }}
-          >
-            {/* Decorative gradient strip */}
-            <div className="h-1 food-gradient" />
-
-            <CardContent className="p-6 space-y-5">
-              <h2 className="text-lg font-bold tracking-tight">Order Summary</h2>
-
-              {/* Table Number */}
-              <Input
-                label="Table Number"
-                type="number"
-                placeholder="Optional"
-                icon={<Hash className="h-4 w-4" />}
-                value={tableNumber || ''}
-                onChange={(e) =>
-                  setTableNumber(e.target.value ? Number(e.target.value) : null)
-                }
-                min={1}
-              />
-
-              {/* Payment Method */}
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">
-                  Payment Method
-                </label>
-                <PaymentToggle value={paymentMethod} onChange={setPaymentMethod} />
-              </div>
-
-              {/* Notes */}
-              <Input
-                label="Order Notes"
-                placeholder="Any special requests..."
-                icon={<MessageSquare className="h-4 w-4" />}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
-
-              {/* Price Breakdown */}
-              <div className="pt-4 border-t border-border/50 space-y-3">
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Items ({itemCount})</span>
-                  <span className="tabular-nums">{formatPrice(totalAmount)}</span>
-                </div>
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Tax (10%)</span>
-                  <span className="tabular-nums">{formatPrice(tax)}</span>
-                </div>
-                <div className="flex justify-between items-end pt-3 border-t border-border/50">
-                  <span className="font-semibold text-base">Total</span>
-                  <span className="text-2xl font-bold gradient-text tabular-nums">
-                    {formatPrice(grandTotal)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Checkout */}
-              <Button
-                variant="glow"
-                size="xl"
-                className="w-full text-base font-semibold hover-lift"
-                onClick={handleCheckout}
-                loading={isCheckingOut}
               >
-                Place Order
-              </Button>
+                Clear Cart
+              </button>
+            )}
+          </div>
 
-              <p className="text-xs text-center text-muted-foreground">
-                {paymentMethod === 'online'
-                  ? 'Secure checkout via Stripe'
-                  : 'Pay at the counter'}
-              </p>
-            </CardContent>
-          </Card>
+          {/* ──────────── Summary Column ──────────── */}
+          <div className="lg:sticky lg:top-24">
+            <Card
+              className="glass-strong overflow-hidden animate-fade-in-up"
+              style={{ animationDelay: '0.15s' }}
+            >
+              {/* Decorative gradient strip */}
+              <div className="h-1 food-gradient" />
+
+              <CardContent className="p-6 space-y-5">
+                <h2 className="text-lg font-bold tracking-tight">Order Summary</h2>
+
+                {/* Table Number */}
+                <Input
+                  label="Table Number"
+                  type="number"
+                  placeholder="Optional"
+                  icon={<Hash className="h-4 w-4" />}
+                  value={tableNumber || ''}
+                  onChange={(e) =>
+                    setTableNumber(e.target.value ? Number(e.target.value) : null)
+                  }
+                  min={1}
+                />
+
+                {/* Payment Method */}
+                <div>
+                  <label className="text-sm font-medium mb-1.5 block">
+                    Payment Method
+                  </label>
+                  <PaymentToggle value={paymentMethod} onChange={setPaymentMethod} />
+                </div>
+
+                {/* Notes */}
+                <Input
+                  label="Order Notes"
+                  placeholder="Any special requests..."
+                  icon={<MessageSquare className="h-4 w-4" />}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+
+                {/* Price Breakdown */}
+                <div className="pt-4 border-t border-border/50 space-y-3">
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Items ({itemCount})</span>
+                    <span className="tabular-nums">{formatPrice(totalAmount)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Tax (10%)</span>
+                    <span className="tabular-nums">{formatPrice(tax)}</span>
+                  </div>
+                  <div className="flex justify-between items-end pt-3 border-t border-border/50">
+                    <span className="font-semibold text-base">Total</span>
+                    <span className="text-2xl font-bold gradient-text tabular-nums">
+                      {formatPrice(grandTotal)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Checkout */}
+                <Button
+                  variant="glow"
+                  size="xl"
+                  className="w-full text-base font-semibold hover-lift"
+                  onClick={handleCheckout}
+                  loading={isCheckingOut}
+                >
+                  Place Order
+                </Button>
+
+                <p className="text-xs text-center text-muted-foreground">
+                  {paymentMethod === 'online'
+                    ? 'Secure checkout via Stripe'
+                    : 'Pay at the counter'}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
