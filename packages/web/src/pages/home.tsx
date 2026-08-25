@@ -106,7 +106,7 @@ export function HomePage() {
   return (
     <div className="flex flex-col">
       {/* ─── Hero Section ─── */}
-      <section className="hero-gradient relative overflow-hidden bg-background py-24 lg:py-36">
+      <section className="hero-gradient relative overflow-hidden bg-background py-24 lg:py-36 justify-center flex">
         {/* Floating food emojis */}
         {FLOATING_EMOJIS.map((emoji, i) => (
           <span
@@ -114,7 +114,7 @@ export function HomePage() {
             className="pointer-events-none absolute select-none text-4xl lg:text-5xl opacity-20 animate-float"
             style={{
               top: `${10 + Math.random() * 50}%`,
-              left: `${5 + (i * 15)}%`,
+              left: `${10 + (i * 15)}%`,
               animationDelay: `${i * 0.8}s`,
               animationDuration: `${5 + i * 0.5}s`,
             }}
@@ -178,7 +178,7 @@ export function HomePage() {
       </section>
 
       {/* ─── Features Section ─── */}
-      <section className="py-20 lg:py-28 bg-muted/30">
+      <section className="py-20 lg:py-28 bg-muted/30 flex justify-center">
         <div className="container px-4">
           <div className="text-center mb-14">
             <h2 className="text-3xl lg:text-4xl font-bold mb-3">
@@ -214,7 +214,7 @@ export function HomePage() {
 
       {/* ─── Featured Dishes Carousel ─── */}
       {featuredItems.length > 0 && (
-        <section className="py-20 lg:py-28">
+        <section className="py-20 lg:py-28 flex justify-center">
           <div className="container px-4">
             <div className="flex justify-between items-end mb-10">
               <div>
@@ -310,7 +310,7 @@ export function HomePage() {
       )}
 
       {/* ─── How It Works ─── */}
-      <section className="py-20 lg:py-28 bg-muted/30">
+      <section className="py-20 lg:py-28 bg-muted/30 flex justify-center">
         <div className="container px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold mb-3">
@@ -348,7 +348,7 @@ export function HomePage() {
       </section>
 
       {/* ─── CTA Section ─── */}
-      <section className="food-gradient relative overflow-hidden py-20 lg:py-28">
+      <section className="food-gradient relative overflow-hidden py-20 lg:py-28 flex justify-center">
         {/* Floating decorative elements */}
         <span className="absolute top-8 left-[10%] text-5xl opacity-30 animate-float" style={{ animationDelay: '0s' }}>🍕</span>
         <span className="absolute top-16 right-[12%] text-4xl opacity-25 animate-float" style={{ animationDelay: '1s' }}>🍔</span>

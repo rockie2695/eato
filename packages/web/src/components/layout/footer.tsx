@@ -57,7 +57,7 @@ export function Footer() {
       {/* Top gradient line */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-      <div className="bg-gradient-to-b from-muted/50 to-background">
+      <div className="bg-gradient-to-b from-muted/50 to-background flex justify-center">
         <div className="container px-4 pt-12 pb-6">
           {/* Main content grid */}
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-8">

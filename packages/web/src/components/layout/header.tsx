@@ -66,7 +66,7 @@ export function Header() {
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-primary/50 via-primary/20 to-transparent" />
 
       {/* Main header bar */}
-      <div className="glass-strong">
+      <div className="flex justify-center glass-strong">
         <div className="container flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link
