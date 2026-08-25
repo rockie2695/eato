@@ -289,6 +289,131 @@ import { MenuSkeleton } from '@/components/ui/menu-skeleton';
 if (loading) return <MenuSkeleton />;
 ```
 
+## Design System
+
+### Adding New Animations
+
+Add new `@keyframes` in `packages/web/src/index.css` inside the `@theme` block:
+
+```css
+@theme {
+  --animate-my-animation: my-animation 0.5s ease-out;
+
+  @keyframes my-animation {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+```
+
+Then use with `className="animate-my-animation"`.
+
+### Adding New Utility Classes
+
+Add utility classes at the bottom of `packages/web/src/index.css`:
+
+```css
+.my-utility {
+  /* styles */
+}
+```
+
+### Using Shared Design Tokens
+
+```typescript
+// In any shared, web, or mobile code:
+import { colors, typography, spacing } from '@eato/shared/tokens';
+
+// Use in StyleSheet (mobile):
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.white,
+    padding: spacing[4],
+  },
+});
+
+// Use in Tailwind (web) - tokens are available as CSS variables:
+// className="bg-primary p-4"
+```
+
+### Web Component Development
+
+Components use:
+- `React.forwardRef` for ref forwarding
+- `class-variance-authority` (CVA) for variant management
+- `cn()` utility from `@/lib/utils` for class merging
+- Radix UI primitives for accessible behavior
+
+```tsx
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const myVariants = cva('base-class', {
+  variants: {
+    variant: {
+      default: 'default-class',
+      outline: 'outline-class',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
+
+interface MyProps extends React.HTMLAttributes<HTMLDivElement>,
+  VariantProps<typeof myVariants> {}
+
+const MyComponent = React.forwardRef<HTMLDivElement, MyProps>(
+  ({ className, variant, ...props }, ref) => (
+    <div ref={ref} className={cn(myVariants({ variant }), className)} {...props} />
+  )
+);
+MyComponent.displayName = 'MyComponent';
+```
+
+### Mobile Component Development
+
+Mobile components use:
+- `StyleSheet.create()` with the warm color palette
+- `Animated` API for micro-interactions
+- Consistent spacing and border radius values
+
+```tsx
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+
+const colors = {
+  primary: '#ea580c',
+  background: '#f8fafc',
+  card: '#ffffff',
+  text: '#1e293b',
+};
+
+export function MyComponent({ onPress }) {
+  const scale = React.useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    Animated.sequence([
+      Animated.timing(scale, { toValue: 0.95, duration: 100, useNativeDriver: true }),
+      Animated.timing(scale, { toValue: 1, duration: 100, useNativeDriver: true }),
+    ]).start();
+    onPress?.();
+  };
+
+  return (
+    <Animated.View style={{ transform: [{ scale }] }}>
+      <TouchableOpacity onPress={handlePress} style={styles.button}>
+        <Text style={styles.text}>Press Me</Text>
+      </TouchableOpacity>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: { backgroundColor: colors.primary, padding: 16, borderRadius: 12 },
+  text: { color: '#fff', fontWeight: '600' },
+});
+```
+
 ## API Documentation
 
 Swagger UI is available at http://localhost:5000/api/docs when the backend is running.

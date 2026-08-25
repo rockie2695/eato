@@ -10,7 +10,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View, ActivityIndicator } from 'react-native';
+import { Text, View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 // Stores
 import { useAuthStore, useCartStore, useNotificationStore, notificationApi } from './src/stores';
@@ -40,10 +41,22 @@ function TabNavigator() {
         tabBarActiveTintColor: '#ea580c',
         tabBarInactiveTintColor: '#94a3b8',
         tabBarStyle: {
-          borderTopColor: '#e2e8f0',
-          paddingBottom: 8,
-          paddingTop: 8,
-          height: 60,
+          backgroundColor: '#fff',
+          borderTopColor: '#f1f5f9',
+          borderTopWidth: 0,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 12,
+          paddingTop: 12,
+          height: Platform.OS === 'ios' ? 88 : 72,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 12,
+          elevation: 12,
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
+          marginTop: 4,
         },
         headerShown: false,
       }}
@@ -53,8 +66,10 @@ function TabNavigator() {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20 }}>🏠</Text>
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[styles.tabIconContainer, focused && styles.tabIconContainerActive]}>
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={22} color={color} />
+            </View>
           ),
         }}
       />
@@ -63,8 +78,10 @@ function TabNavigator() {
         component={MenuScreen}
         options={{
           tabBarLabel: 'Menu',
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20 }}>🍽️</Text>
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[styles.tabIconContainer, focused && styles.tabIconContainerActive]}>
+              <Ionicons name={focused ? 'restaurant' : 'restaurant-outline'} size={22} color={color} />
+            </View>
           ),
         }}
       />
@@ -73,8 +90,10 @@ function TabNavigator() {
         component={CartScreen}
         options={{
           tabBarLabel: 'Cart',
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20 }}>🛒</Text>
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[styles.tabIconContainer, focused && styles.tabIconContainerActive]}>
+              <Ionicons name={focused ? 'cart' : 'cart-outline'} size={22} color={color} />
+            </View>
           ),
         }}
       />
@@ -83,8 +102,10 @@ function TabNavigator() {
         component={OrdersScreen}
         options={{
           tabBarLabel: 'Orders',
-          tabBarIcon: ({ color }) => (
-            <Text style={{ fontSize: 20 }}>📋</Text>
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[styles.tabIconContainer, focused && styles.tabIconContainerActive]}>
+              <Ionicons name={focused ? 'receipt' : 'receipt-outline'} size={22} color={color} />
+            </View>
           ),
         }}
       />
@@ -111,7 +132,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#ea580c" />
       </View>
     );
@@ -126,9 +147,21 @@ export default function App() {
 
           <Stack.Navigator
             screenOptions={{
-              headerStyle: { backgroundColor: '#ea580c' },
+              headerStyle: {
+                backgroundColor: '#ea580c',
+                shadowColor: '#ea580c',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.2,
+                shadowRadius: 8,
+                elevation: 4,
+              },
               headerTintColor: '#fff',
-              headerTitleStyle: { fontWeight: 'bold' },
+              headerTitleStyle: {
+                fontWeight: '700',
+                fontSize: 18,
+              },
+              headerShadowVisible: true,
+              animation: 'slide_from_right',
             }}
           >
             <Stack.Screen
@@ -139,12 +172,22 @@ export default function App() {
             <Stack.Screen
               name="Login"
               component={LoginScreen}
-              options={{ title: 'Sign In' }}
+              options={{
+                title: 'Sign In',
+                headerBackTitle: 'Back',
+                headerTransparent: true,
+                headerStyle: { backgroundColor: 'transparent' },
+                headerShadowVisible: false,
+              }}
             />
             <Stack.Screen
               name="OrderDetail"
               component={OrderDetailScreen}
-              options={{ title: 'Order Details' }}
+              options={{
+                title: 'Order Details',
+                headerBackTitle: 'Back',
+                headerStyle: { backgroundColor: '#ea580c' },
+              }}
             />
           </Stack.Navigator>
 
@@ -160,3 +203,19 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
+  },
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabIconContainerActive: {
+    // Optional: add subtle background for active tab
+  },
+});

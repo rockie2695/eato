@@ -20,9 +20,9 @@ eato/
 | Layer | Technology |
 |-------|-----------|
 | **Monorepo** | pnpm workspaces |
-| **Web Frontend** | Vite 8 + React 19 + TypeScript 7 + Tailwind CSS 4 |
-| **Mobile Frontend** | React Native (Expo 57) + TypeScript 7 |
-| **Shared Code** | API client, TypeScript types, Zustand stores |
+| **Web Frontend** | Vite 8 + React 19 + TypeScript 7 + Tailwind CSS 4 + shadcn/ui (19 components) |
+| **Mobile Frontend** | React Native (Expo 57) + TypeScript 7 + 8 reusable UI components |
+| **Shared Code** | API client, TypeScript types, Zustand stores, design tokens |
 | **Backend** | Node.js + Express 5 + TypeScript 7 |
 | **Database** | PostgreSQL + Prisma 7 |
 | **Cache** | Redis (ioredis 6) |
@@ -118,16 +118,20 @@ Shared business logic used by both Web and Mobile:
 - **`types/`** - TypeScript interfaces matching Prisma schema
 - **`api/`** - Axios-based API client with platform-adaptive storage
 - **`stores/`** - Zustand state management (auth, cart, order, theme, notification)
-- **`api/`** - Includes analytics API (reports, revenue trends, popular items)
 - **`utils/`** - Pure utility functions (formatting, validation, calculations)
 - **`constants/`** - Application-wide constants and enum configs
+- **`tokens.ts`** - Shared design tokens (colors, typography, spacing, radii, shadows)
 
 ### `@eato/web`
 
-Vite-powered React web application:
+Vite-powered React web application with a modern, premium design:
 
-- React Router DOM v6 for navigation
-- Tailwind CSS + shadcn/ui components
+- React Router DOM v7 for navigation
+- Tailwind CSS 4 + shadcn/ui component library (19 components)
+- Glass morphism effects, animated gradients, micro-interactions
+- Plus Jakarta Sans font with warm food-themed color palette
+- Full dark mode support with warm tones
+- 30+ CSS animations (float, shimmer, glow, bounce-in, stagger, etc.)
 - React Query for server state management
 - Socket.io client for real-time updates
 - Admin dashboard with theme customization
@@ -138,10 +142,12 @@ Vite-powered React web application:
 
 ### `@eato/mobile`
 
-Expo React Native mobile application:
+Expo React Native mobile application with modern food delivery app design:
 
-- React Navigation (Stack + Bottom Tabs)
-- NativeWind for styling
+- React Navigation (Stack + Bottom Tabs) with smooth transitions
+- Reusable UI component library (Button, Card, Input, Badge, Avatar, etc.)
+- Animated API micro-interactions (fade-in, scale, stagger)
+- Ionicons for consistent iconography
 - Expo SecureStore for token storage
 - Socket.io client for real-time updates
 - Notification system (news ticker + popup)
@@ -159,6 +165,75 @@ Express REST API server:
 - Swagger / OpenAPI 3.0 documentation
 - Analytics & reporting API (admin only)
 - Sentry error tracking and performance monitoring
+
+## 🎨 Design System
+
+### Typography
+- **Font**: Plus Jakarta Sans (Google Fonts)
+- **Weights**: 200-800 (variable font)
+
+### Color Palette
+- **Primary**: Warm orange `#ea580c` (appetizing, energetic)
+- **Background Light**: `hsl(40 33% 98%)` (warm white)
+- **Background Dark**: `hsl(20 14% 6%)` (warm dark)
+- **Accent colors**: Cream, Sage, Warm gradients
+
+### Design Tokens
+Shared between Web and Mobile via `@eato/shared/tokens`:
+```typescript
+import { colors, typography, spacing, radii, shadows } from '@eato/shared/tokens';
+```
+
+### Animations
+30+ CSS animations defined in `index.css`:
+- `animate-float`, `animate-float-slow` — floating elements
+- `animate-shimmer` — loading shimmer effect
+- `animate-glow-pulse`, `animate-pulse-glow` — glow effects
+- `animate-gradient-shift` — animated gradient text
+- `animate-bounce-in`, `animate-scale-in` — entrance animations
+- `animate-fade-in-up`, `animate-slide-up` — page transitions
+- `stagger-children` — cascading child animations
+
+### Utility Classes
+- `glass` / `glass-strong` — Glass morphism backgrounds
+- `glow` / `glow-lg` — Orange glow shadows
+- `hover-lift` — Cards lift on hover
+- `gradient-text` / `gradient-text-animated` — Gradient text effects
+- `food-gradient` / `hero-gradient` — Background gradients
+- `shimmer-bg` — Shimmer loading background
+
+### Web UI Components (19)
+| Component | Description |
+|-----------|-------------|
+| `Button` | 6 variants: default, destructive, outline, secondary, ghost, gradient, glow + loading state |
+| `Card` | Glass morphism variant, hover-lift |
+| `Badge` | 7 variants: default, secondary, destructive, outline, success, warning, info + pulse, dot |
+| `Input` | Label, error, icon support |
+| `Avatar` | Image or initials fallback, 4 sizes |
+| `Dialog` | Radix UI modal with animations |
+| `Tabs` | Radix UI tabs with animated indicator |
+| `Select` | Custom styled dropdown |
+| `Switch` | Radix UI toggle switch |
+| `Toast` | Notification toasts with 5 variants |
+| `Sheet` | Side panel (4 directions) |
+| `Progress` | Animated progress bar |
+| `Separator` | Horizontal/vertical divider |
+| `Skeleton` | Animated loading placeholder |
+| `Spinner` | Circular loading indicator |
+| `PageLoading` | Full-page centered loader |
+| + 4 page-specific skeletons | Home, Menu, Cart, Order |
+
+### Mobile UI Components (8)
+| Component | Description |
+|-----------|-------------|
+| `Button` | 5 variants, 3 sizes, loading state |
+| `Card` | 3 variants: default, elevated, outlined |
+| `Input` | Label, focus/error states, icon |
+| `Badge` | 5 color variants |
+| `Avatar` | Image or initials, 3 sizes |
+| `EmptyState` | Icon, title, subtitle, action |
+| `Skeleton` | Animated pulse placeholder |
+| `ScreenHeader` | Title, subtitle, actions |
 
 ## 🎨 Theme Customization
 
