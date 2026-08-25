@@ -22,8 +22,8 @@ const configSchema = z.object({
   // JWT
   JWT_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
-  JWT_EXPIRES_IN: z.string().default('15m'),
-  JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
+  JWT_EXPIRES_IN: z.union([z.string(), z.number()]).default('15m'),
+  JWT_REFRESH_EXPIRES_IN: z.union([z.string(), z.number()]).default('7d'),
 
   // Stripe
   STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
@@ -40,6 +40,7 @@ const configSchema = z.object({
 export type Config = z.infer<typeof configSchema>;
 
 function loadConfig(): Config {
+  console.log(process.env.DATABASE_URL)
   const result = configSchema.safeParse(process.env);
 
   if (!result.success) {

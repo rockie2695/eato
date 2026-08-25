@@ -23,7 +23,7 @@ export const stripe = new Stripe(config.STRIPE_SECRET_KEY, {
  */
 export async function createCheckoutSession(
   orderId: string,
-  amount: number,
+  _amount: number,
   items: { name: string; quantity: number; price: number }[]
 ): Promise<Stripe.Checkout.Session> {
   const session = await stripe.checkout.sessions.create({

@@ -34,6 +34,8 @@ export function initSentry() {
   console.log('✅ Sentry initialized');
 }
 
-export function setupExpressErrorHandler(app: Parameters<typeof Sentry.setupExpressErrorHandler>[0]) {
+export function setupExpressErrorHandler(app: any) {
   Sentry.setupExpressErrorHandler(app);
 }
+
+export { Sentry };

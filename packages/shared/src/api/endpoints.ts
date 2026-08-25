@@ -124,6 +124,18 @@ export function createMenuApi(client: AxiosInstance) {
       );
       return res.data.data;
     },
+
+    /** Update a menu item */
+    updateItem: async (
+      id: string,
+      data: Partial<Pick<MenuItemWithCategory, 'name' | 'description' | 'price' | 'image' | 'categoryId' | 'isAvailable' | 'isFeatured' | 'tags'>>
+    ): Promise<MenuItemWithCategory> => {
+      const res = await client.put<ApiResponse<MenuItemWithCategory>>(
+        `/menu/items/${id}`,
+        data
+      );
+      return res.data.data;
+    },
   };
 }
 

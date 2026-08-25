@@ -40,13 +40,13 @@ function generateTokens(user: { id: string; email: string; role: UserRole }): To
   const accessToken = jwt.sign(
     { userId: user.id, email: user.email, role: user.role },
     config.JWT_SECRET,
-    { expiresIn: config.JWT_EXPIRES_IN }
+    { expiresIn: config.JWT_EXPIRES_IN as any }
   );
 
   const refreshToken = jwt.sign(
     { userId: user.id },
     config.JWT_REFRESH_SECRET,
-    { expiresIn: config.JWT_REFRESH_EXPIRES_IN }
+    { expiresIn: config.JWT_REFRESH_EXPIRES_IN as any }
   );
 
   return { accessToken, refreshToken };

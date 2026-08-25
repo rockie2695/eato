@@ -28,9 +28,9 @@ function createMockStorage(): StorageAdapter & { store: Record<string, string> }
 describe('AuthStore', () => {
   let storage: ReturnType<typeof createMockStorage>;
   let mockApi: {
-    login: ReturnType<typeof vi.fn>;
-    register: ReturnType<typeof vi.fn>;
-    me: ReturnType<typeof vi.fn>;
+    login: any;
+    register: any;
+    me: any;
   };
 
   beforeEach(() => {
@@ -268,10 +268,10 @@ describe('CartStore', () => {
 
 describe('OrderStore', () => {
   let mockApi: {
-    create: ReturnType<typeof vi.fn>;
-    getMyOrders: ReturnType<typeof vi.fn>;
-    getAll: ReturnType<typeof vi.fn>;
-    getById: ReturnType<typeof vi.fn>;
+    create: any;
+    getMyOrders: any;
+    getAll: any;
+    getById: any;
   };
 
   beforeEach(() => {

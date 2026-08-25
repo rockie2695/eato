@@ -24,6 +24,8 @@ interface AuthState {
   isLoading: boolean;
   /** Last auth error message */
   error: string | null;
+  /** Whether user is authenticated (computed) */
+  isAuthenticated: boolean;
 }
 
 interface AuthActions {
@@ -73,6 +75,7 @@ export function createAuthStore(
     refreshToken: null,
     isLoading: false,
     error: null,
+    isAuthenticated: false,
 
     // ── Actions ──────────────────────────────────────────────
 
@@ -90,7 +93,7 @@ export function createAuthStore(
 
         if (accessToken && refreshToken && userJson) {
           const user = JSON.parse(userJson) as User;
-          set({ user, accessToken, refreshToken });
+          set({ user, accessToken, refreshToken, isAuthenticated: true });
         }
       } catch {
         // Storage corrupted - clear everything
@@ -119,6 +122,7 @@ export function createAuthStore(
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
           isLoading: false,
+          isAuthenticated: true,
         });
       } catch (err) {
         const message =
@@ -148,6 +152,7 @@ export function createAuthStore(
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
           isLoading: false,
+          isAuthenticated: true,
         });
       } catch (err) {
         const message =
@@ -186,6 +191,7 @@ export function createAuthStore(
         accessToken: null,
         refreshToken: null,
         error: null,
+        isAuthenticated: false,
       });
     },
 

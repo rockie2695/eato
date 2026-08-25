@@ -5,11 +5,11 @@
  * POST /api/v1/payments/webhook - Stripe webhook endpoint
  */
 
-import { Router, raw } from 'express';
+import { Router, raw, type Router as RouterType } from 'express';
 import { constructWebhookEvent } from '../../config/stripe.js';
 import { prisma } from '../../config/database.js';
 
-const router = Router();
+const router: RouterType = Router();
 
 /**
  * @swagger
@@ -94,7 +94,7 @@ router.post(
             },
           });
 
-          console.log(`✅ Payment completed for order ${orderId}`);
+          console.log(`??Payment completed for order ${orderId}`);
         }
         break;
       }
@@ -111,7 +111,7 @@ router.post(
             },
           });
 
-          console.log(`❌ Payment failed for order ${orderId}`);
+          console.log(`??Payment failed for order ${orderId}`);
         }
         break;
       }

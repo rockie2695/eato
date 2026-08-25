@@ -170,35 +170,18 @@ export async function clearCart(userId: string) {
 /**
  * Format cart data for API response.
  */
-function formatCart(cart: {
-  id: string;
-  userId: string;
-  items: Array<{
-    id: string;
-    menuItemId: string;
-    quantity: number;
-    price: number;
-    specialInstructions: string | null;
-    menuItem: {
-      id: string;
-      name: string;
-      price: number;
-      image: string | null;
-    };
-  }>;
-  updatedAt: Date;
-}) {
+function formatCart(cart: any) {
   const totalAmount = cart.items.reduce(
-    (sum, item) => sum + item.menuItem.price * item.quantity,
+    (sum: number, item: any) => sum + item.menuItem.price * item.quantity,
     0
   );
 
-  const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  const itemCount = cart.items.reduce((sum: number, item: any) => sum + item.quantity, 0);
 
   return {
     id: cart.id,
     userId: cart.userId,
-    items: cart.items.map((item) => ({
+    items: cart.items.map((item: any) => ({
       id: item.id,
       menuItemId: item.menuItemId,
       quantity: item.quantity,

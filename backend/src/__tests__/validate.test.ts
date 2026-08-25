@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { NextFunction } from 'express';
 import { validate } from '../middleware/validate';
 import { z } from 'zod';
 
@@ -30,7 +31,7 @@ describe('validate middleware', () => {
     const req = mockReq({ name: 'John', email: 'john@example.com' });
     const res = mockRes();
 
-    middleware(req, res, mockNext);
+    middleware(req, res, mockNext as unknown as NextFunction);
 
     expect(mockNext).toHaveBeenCalled();
     expect(req.body).toEqual({ name: 'John', email: 'john@example.com' });
@@ -41,7 +42,7 @@ describe('validate middleware', () => {
     const req = mockReq({ name: '', email: 'invalid' });
     const res = mockRes();
 
-    middleware(req, res, mockNext);
+    middleware(req, res, mockNext as unknown as NextFunction);
 
     expect(mockNext).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(400);
@@ -58,7 +59,7 @@ describe('validate middleware', () => {
     const req = mockReq({});
     const res = mockRes();
 
-    middleware(req, res, mockNext);
+    middleware(req, res, mockNext as unknown as NextFunction);
 
     const response = res.json.mock.calls[0][0];
     expect(response.details).toBeDefined();

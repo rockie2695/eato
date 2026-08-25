@@ -4,6 +4,7 @@
  * Starts the HTTP server, database connection, Redis, and Socket.io.
  */
 
+import 'dotenv/config';
 import http from 'http';
 import app from './app.js';
 import { config } from './config/index.js';
@@ -11,7 +12,7 @@ import { connectDatabase, disconnectDatabase } from './config/database.js';
 import { redis } from './config/redis.js';
 import { initSocketIO } from './socket/index.js';
 import { setSocketIO } from './modules/order/routes.js';
-import { initSentry, Sentry } from './config/sentry.js';
+import { initSentry } from './config/sentry.js';
 
 async function main() {
   // ── Initialize Sentry ────────────────────────────────────

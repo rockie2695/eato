@@ -18,7 +18,7 @@ export function validate(schema: ZodType) {
 
     if (!result.success) {
       const details: Record<string, string[]> = {};
-      result.error.errors.forEach((e) => {
+      result.error.issues.forEach((e) => {
         const field = e.path.join('.');
         if (!details[field]) details[field] = [];
         details[field].push(e.message);

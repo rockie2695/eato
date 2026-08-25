@@ -7,12 +7,12 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { Prisma } from '@prisma/client';
 
 interface AppError extends Error {
   statusCode?: number;
   code?: string;
   details?: Record<string, string[]>;
+  meta?: unknown;
 }
 
 /**
@@ -50,7 +50,7 @@ export function errorHandler(
   // ── Zod Validation Error ───────────────────────────────────
   if (err instanceof ZodError) {
     const details: Record<string, string[]> = {};
-    err.errors.forEach((e) => {
+    err.issues.forEach((e) => {
       const field = e.path.join('.');
       if (!details[field]) details[field] = [];
       details[field].push(e.message);
@@ -66,10 +66,11 @@ export function errorHandler(
   }
 
   // ── Prisma Errors ──────────────────────────────────────────
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    switch (err.code) {
+  if (err.name === 'PrismaClientKnownRequestError') {
+    const prismaErr = err as AppError & { code: string; meta?: { target?: string[] } };
+    switch (prismaErr.code) {
       case 'P2002': {
-        const field = (err.meta?.target as string[])?.join(', ') || 'field';
+        const field = prismaErr.meta?.target?.join(', ') || 'field';
         res.status(409).json({
           message: `A record with this ${field} already exists`,
           code: 'DUPLICATE_ENTRY',

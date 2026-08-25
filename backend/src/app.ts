@@ -5,7 +5,7 @@
  * This module creates the Express app without starting the server.
  */
 
-import express from 'express';
+import express, { type Express } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -23,7 +23,7 @@ import staffRoutes from './modules/staff/routes.js';
 import notificationRoutes from './modules/notification/routes.js';
 import analyticsRoutes from './modules/analytics/routes.js';
 
-const app = express();
+const app: Express = express();
 
 // ── Security Middleware ────────────────────────────────────────
 app.use(helmet());

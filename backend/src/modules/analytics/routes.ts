@@ -10,13 +10,13 @@
  * GET /analytics/peak-hours      - Orders by hour of day
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { requireAuth, requireRole } from '../../middleware/auth.js';
 import { validate } from '../../middleware/validate.js';
 import * as analyticsService from './service.js';
 import { reportQuerySchema, popularItemsQuerySchema } from './validation.js';
 
-const router = Router();
+const router: RouterType = Router();
 
 /**
  * @swagger
@@ -41,7 +41,7 @@ const router = Router();
 router.get(
   '/report',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(reportQuerySchema),
   async (req, res) => {
     const { period } = req.query as { period: analyticsService.Period };
@@ -73,7 +73,7 @@ router.get(
 router.get(
   '/overview',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(reportQuerySchema),
   async (req, res) => {
     const { period } = req.query as { period: analyticsService.Period };
@@ -105,7 +105,7 @@ router.get(
 router.get(
   '/revenue-trend',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(reportQuerySchema),
   async (req, res) => {
     const { period } = req.query as { period: analyticsService.Period };
@@ -138,7 +138,7 @@ router.get(
 router.get(
   '/popular-items',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(popularItemsQuerySchema),
   async (req, res) => {
     const { limit } = req.query as { limit?: number };
@@ -170,7 +170,7 @@ router.get(
 router.get(
   '/status-dist',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(reportQuerySchema),
   async (req, res) => {
     const { period } = req.query as { period: analyticsService.Period };
@@ -202,7 +202,7 @@ router.get(
 router.get(
   '/payment-dist',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(reportQuerySchema),
   async (req, res) => {
     const { period } = req.query as { period: analyticsService.Period };
@@ -234,7 +234,7 @@ router.get(
 router.get(
   '/peak-hours',
   requireAuth,
-  requireRole(['admin']),
+  requireRole('admin'),
   validate(reportQuerySchema),
   async (req, res) => {
     const { period } = req.query as { period: analyticsService.Period };

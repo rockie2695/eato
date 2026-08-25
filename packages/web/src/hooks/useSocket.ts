@@ -6,13 +6,21 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { io, type Socket } from 'socket.io-client';
 import { useAuthStore } from '@/stores';
 import type { OrderUpdateEvent, NewOrderEvent } from '@eato/shared/types';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-export function useSocket() {
+interface UseSocketReturn {
+  isConnected: boolean;
+  subscribeToOrder: (orderId: string) => void;
+  unsubscribeFromOrder: (orderId: string) => void;
+  onOrderUpdate: (callback: (event: OrderUpdateEvent) => void) => () => void;
+  onNewOrder: (callback: (event: NewOrderEvent) => void) => () => void;
+}
+
+export function useSocket(): UseSocketReturn {
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const { accessToken } = useAuthStore();

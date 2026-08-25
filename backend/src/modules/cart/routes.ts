@@ -8,11 +8,11 @@
  * DELETE /api/v1/cart          - Clear cart
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { requireAuth, type AuthRequest } from '../../middleware/auth.js';
 import * as cartService from './service.js';
 
-const router = Router();
+const router: RouterType = Router();
 
 // All cart routes require authentication
 router.use(requireAuth);
@@ -136,7 +136,7 @@ router.put('/items/:id', async (req: AuthRequest, res, next) => {
     const { quantity, specialInstructions } = req.body;
     const cart = await cartService.updateItem(
       req.user!.id,
-      req.params.id,
+      req.params.id as string,
       quantity,
       specialInstructions
     );
@@ -178,7 +178,7 @@ router.put('/items/:id', async (req: AuthRequest, res, next) => {
  */
 router.delete('/items/:id', async (req: AuthRequest, res, next) => {
   try {
-    const cart = await cartService.removeItem(req.user!.id, req.params.id);
+    const cart = await cartService.removeItem(req.user!.id, req.params.id as string);
     res.json({ data: cart });
   } catch (error) {
     next(error);

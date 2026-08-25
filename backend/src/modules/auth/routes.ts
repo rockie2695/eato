@@ -8,14 +8,14 @@
  * GET  /api/v1/auth/me       - Get current user profile
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { validate } from '../../middleware/validate.js';
 import { requireAuth, type AuthRequest } from '../../middleware/auth.js';
 import { authLimiter } from '../../middleware/rateLimiter.js';
 import { loginSchema, registerSchema, refreshSchema } from './validation.js';
 import * as authService from './service.js';
 
-const router = Router();
+const router: RouterType = Router();
 
 /**
  * @swagger

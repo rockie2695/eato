@@ -7,13 +7,13 @@
  * DELETE /api/v1/staff/:id  - Delete staff member (admin)
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { requireAuth, requireRole } from '../../middleware/auth.js';
 import { validate } from '../../middleware/validate.js';
 import { registerSchema } from '../auth/validation.js';
 import * as staffService from './service.js';
 
-const router = Router();
+const router: RouterType = Router();
 
 // All staff routes require admin role
 router.use(requireAuth, requireRole('admin'));
@@ -155,7 +155,7 @@ router.post('/', validate(registerSchema), async (req, res, next) => {
  */
 router.put('/:id', async (req, res, next) => {
   try {
-    const staff = await staffService.updateStaff(req.params.id, req.body);
+    const staff = await staffService.updateStaff(req.params.id as string, req.body);
     res.json({ data: staff });
   } catch (error) {
     next(error);
@@ -191,7 +191,7 @@ router.put('/:id', async (req, res, next) => {
  */
 router.delete('/:id', async (req, res, next) => {
   try {
-    await staffService.deleteStaff(req.params.id);
+    await staffService.deleteStaff(req.params.id as string);
     res.status(204).send();
   } catch (error) {
     next(error);

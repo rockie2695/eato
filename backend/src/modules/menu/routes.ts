@@ -11,15 +11,15 @@
  * DELETE /api/v1/menu/items/:id     - Delete item (admin)
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { validate } from '../../middleware/validate.js';
 import { requireAuth, requireRole } from '../../middleware/auth.js';
 import { createCategorySchema, createMenuItemSchema, updateMenuItemSchema } from './validation.js';
 import * as menuService from './service.js';
 
-const router = Router();
+const router: RouterType = Router();
 
-// â”€â”€ Public Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?€?€ Public Routes ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
 
 /**
  * @swagger
@@ -145,7 +145,7 @@ router.get('/items', async (req, res, next) => {
  */
 router.get('/items/:id', async (req, res, next) => {
   try {
-    const item = await menuService.getItemById(req.params.id);
+    const item = await menuService.getItemById(req.params.id as string);
     res.json({ data: item });
   } catch (error) {
     next(error);
@@ -181,7 +181,7 @@ router.get('/featured', async (_req, res, next) => {
   }
 });
 
-// â”€â”€ Admin Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?€?€ Admin Routes ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
 
 /**
  * @swagger
@@ -320,7 +320,7 @@ router.put(
   validate(updateMenuItemSchema),
   async (req, res, next) => {
     try {
-      const item = await menuService.updateItem(req.params.id, req.body);
+      const item = await menuService.updateItem(req.params.id as string, req.body);
       res.json({ data: item });
     } catch (error) {
       next(error);
@@ -361,7 +361,7 @@ router.delete(
   requireRole('admin'),
   async (req, res, next) => {
     try {
-      await menuService.deleteItem(req.params.id);
+      await menuService.deleteItem(req.params.id as string);
       res.status(204).send();
     } catch (error) {
       next(error);

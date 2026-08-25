@@ -9,7 +9,7 @@
  * DELETE /api/v1/notifications/:id      - Delete notification (admin)
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { requireAuth, requireRole } from '../../middleware/auth.js';
 import { validate } from '../../middleware/validate.js';
 import {
@@ -18,9 +18,9 @@ import {
 } from './validation.js';
 import * as notificationService from './service.js';
 
-const router = Router();
+const router: RouterType = Router();
 
-// â”€â”€ Public Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?€?€ Public Routes ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
 
 /**
  * @swagger
@@ -63,7 +63,7 @@ router.get('/active', async (req, res, next) => {
   }
 });
 
-// â”€â”€ Admin Routes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ?€?€ Admin Routes ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€
 
 /**
  * @swagger
@@ -196,7 +196,7 @@ router.get(
   requireRole('admin'),
   async (req, res, next) => {
     try {
-      const notification = await notificationService.getById(req.params.id);
+      const notification = await notificationService.getById(req.params.id as string);
       res.json({ data: notification });
     } catch (error) {
       next(error);
@@ -244,7 +244,7 @@ router.put(
   async (req, res, next) => {
     try {
       const notification = await notificationService.update(
-        req.params.id,
+        req.params.id as string,
         req.body
       );
       res.json({ data: notification });
@@ -286,7 +286,7 @@ router.delete(
   requireRole('admin'),
   async (req, res, next) => {
     try {
-      await notificationService.remove(req.params.id);
+      await notificationService.remove(req.params.id as string);
       res.status(204).send();
     } catch (error) {
       next(error);

@@ -9,7 +9,7 @@
  * POST   /api/v1/orders/:id/cancel   - Cancel order (customer)
  */
 
-import { Router } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import { requireAuth, requireRole, type AuthRequest } from '../../middleware/auth.js';
 import { orderLimiter } from '../../middleware/rateLimiter.js';
 import { validate } from '../../middleware/validate.js';
@@ -17,7 +17,7 @@ import { createOrderSchema, updateOrderStatusSchema } from './validation.js';
 import * as orderService from './service.js';
 import type { Server } from 'socket.io';
 
-const router = Router();
+const router: RouterType = Router();
 
 // Inject Socket.io instance into request
 let io: Server | null = null;
@@ -240,7 +240,7 @@ router.get(
  */
 router.get('/:id', async (req: AuthRequest, res, next) => {
   try {
-    const order = await orderService.getOrderById(req.params.id, req.user!.id);
+    const order = await orderService.getOrderById(req.params.id as string, req.user!.id);
     res.json({ data: order });
   } catch (error) {
     next(error);
@@ -257,11 +257,11 @@ router.get('/:id', async (req: AuthRequest, res, next) => {
  *       Update the status of an order. Requires staff, kitchen, or admin role.
  *
  *       Valid status transitions:
- *       - pending → confirmed, cancelled
- *       - confirmed → preparing, cancelled
- *       - preparing → ready
- *       - ready → served
- *       - served → completed
+ *       - pending ??confirmed, cancelled
+ *       - confirmed ??preparing, cancelled
+ *       - preparing ??ready
+ *       - ready ??served
+ *       - served ??completed
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -304,7 +304,7 @@ router.patch(
   async (req, res, next) => {
     try {
       const order = await orderService.updateOrderStatus(
-        req.params.id,
+        req.params.id as string,
         req.body.status,
         io || undefined
       );
@@ -354,7 +354,7 @@ router.patch(
  */
 router.post('/:id/cancel', async (req: AuthRequest, res, next) => {
   try {
-    const order = await orderService.cancelOrder(req.params.id, req.user!.id);
+    const order = await orderService.cancelOrder(req.params.id as string, req.user!.id);
     res.json({ data: order });
   } catch (error) {
     next(error);
