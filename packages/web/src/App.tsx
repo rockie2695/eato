@@ -25,7 +25,7 @@ import { AdminPage } from '@/pages/admin';
 function App() {
   const { initialize } = useAuthStore();
   const { loadCart } = useCartStore();
-  const { loadTheme } = useThemeStore();
+  const { loadTheme, setSystemDark } = useThemeStore();
   const {
     tickers,
     popups,
@@ -40,6 +40,18 @@ function App() {
     loadCart();
     loadTheme();
     loadActive(notificationApi.getActive);
+
+    // Listen for system color scheme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemDark(e.matches);
+    };
+    mediaQuery.addEventListener('change', handleChange);
+
+    // Set initial system preference
+    setSystemDark(mediaQuery.matches);
+
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   return (

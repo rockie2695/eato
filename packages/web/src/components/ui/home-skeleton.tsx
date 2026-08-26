@@ -15,7 +15,7 @@ export function HomeSkeleton() {
   return (
     <div className="flex flex-col">
       {/* Hero skeleton */}
-      <section className="py-20 lg:py-32">
+      <section className="py-20 lg:py-32 justify-center flex">
         <div className="container px-4">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <Skeleton className="h-6 w-48 mx-auto rounded-full" />
@@ -31,7 +31,7 @@ export function HomeSkeleton() {
       </section>
 
       {/* Features skeleton */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-muted/30 justify-center flex">
         <div className="container px-4">
           <div className="text-center mb-12 space-y-2">
             <Skeleton className="h-8 w-64 mx-auto" />
@@ -53,7 +53,7 @@ export function HomeSkeleton() {
       </section>
 
       {/* Featured items skeleton */}
-      <section className="py-20">
+      <section className="py-20 justify-center flex">
         <div className="container px-4">
           <div className="flex justify-between items-center mb-8">
             <div className="space-y-2">
