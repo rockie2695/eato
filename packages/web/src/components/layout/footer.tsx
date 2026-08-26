@@ -55,7 +55,7 @@ export function Footer() {
   return (
     <footer className="relative mt-auto">
       {/* Top gradient line */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+      <div className="top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent container m-auto" />
 
       <div className="bg-gradient-to-b from-muted/50 to-background flex justify-center">
         <div className="container px-4 pt-12 pb-6">
