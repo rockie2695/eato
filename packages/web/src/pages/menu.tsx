@@ -187,12 +187,12 @@ export function MenuPage() {
 
         {/* ── Category Tabs ── */}
         <div
-          className="mb-8 animate-fade-in"
+          className="mb-8 animate-fade-in sticky top-[66px] z-10 bg-background/80 backdrop-blur-sm border-b border-border/50"
           style={{ animationDelay: '0.2s' }}
         >
           <div
             ref={tabsRef}
-            className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory"
+            className="flex gap-2 overflow-x-auto py-2 scrollbar-hide snap-x snap-mandatory"
           >
             {allCategories.map((cat) => {
               const isActive = selectedCategory === (cat.id || 'all');
@@ -232,7 +232,7 @@ export function MenuPage() {
               return (
                 <Card
                   key={item.id}
-                  className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover-lift bg-card"
+                  className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover-lift bg-card flex flex-col"
                 >
                   {/* Image Area */}
                   <div className="relative h-52 overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10">
@@ -272,7 +272,7 @@ export function MenuPage() {
                     </div>
                   </div>
 
-                  <CardContent className="p-4">
+                  <CardContent className="p-4 grow flex flex-col">
                     {/* Title + Category */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-bold text-base leading-tight text-foreground group-hover:text-primary transition-colors duration-200">

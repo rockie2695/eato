@@ -286,32 +286,32 @@
   --input: 20 10% 18%;
   --ring: 25 95% 58%;
 
-  --color-warm-50: 20 14% 10%;
-  --color-warm-100: 20 12% 14%;
-  --color-warm-200: 20 10% 18%;
-  --color-warm-300: 25 10% 25%;
-  --color-warm-400: 25 95% 58%;
-  --color-warm-500: 25 95% 53%;
-  --color-warm-600: 25 85% 48%;
-  --color-warm-700: 20 70% 40%;
-  --color-warm-800: 18 60% 30%;
-  --color-warm-900: 15 50% 22%;
+  --color-warm-50: #fff7ed;
+  --color-warm-100: #ffedd5;
+  --color-warm-200: #fed7aa;
+  --color-warm-300: #fdba74;
+  --color-warm-400: #fb923c;
+  --color-warm-500: #f97316;
+  --color-warm-600: #ea580c;
+  --color-warm-700: #c2410c;
+  --color-warm-800: #9a3412;
+  --color-warm-900: #7c2d12;
 
-  --color-cream-50: 20 14% 8%;
-  --color-cream-100: 20 12% 12%;
-  --color-cream-200: 20 10% 16%;
-  --color-cream-300: 20 8% 22%;
+  --color-cream-50: #fefdfb;
+  --color-cream-100: #fdf8f0;
+  --color-cream-200: #faf0de;
+  --color-cream-300: #f5e6c8;
 
-  --color-sage-50: 120 5% 10%;
-  --color-sage-100: 120 5% 14%;
-  --color-sage-200: 120 5% 18%;
-  --color-sage-300: 120 5% 30%;
-  --color-sage-400: 120 5% 40%;
-  --color-sage-500: 120 5% 50%;
-  --color-sage-600: 120 5% 60%;
-  --color-sage-700: 120 5% 70%;
-  --color-sage-800: 120 5% 80%;
-  --color-sage-900: 120 5% 90%;
+  --color-sage-50: #f6f7f6;
+  --color-sage-100: #e3e5e3;
+  --color-sage-200: #c7cbc6;
+  --color-sage-300: #a3a9a2;
+  --color-sage-400: #7f867e;
+  --color-sage-500: #636962;
+  --color-sage-600: #4f534e;
+  --color-sage-700: #424541;
+  --color-sage-800: #373937;
+  --color-sage-900: #2f312f;
 
   --shadow-glow: 0 0 30px hsl(var(--primary) / 0.25);
   --shadow-glow-lg: 0 0 60px hsl(var(--primary) / 0.3);
