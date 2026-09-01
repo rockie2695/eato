@@ -4,7 +4,7 @@
  * Tests store creation, state management, and actions.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createAuthStore } from '../stores/authStore';
 import { createCartStore } from '../stores/cartStore';
 import { createOrderStore } from '../stores/orderStore';
@@ -338,13 +338,21 @@ describe('ThemeStore', () => {
     const state = useThemeStore.getState();
     expect(state.theme).toBe('system');
     expect(state.primaryColor).toBe('#ea580c');
+    expect(state.secondaryColor).toBe('');
+    expect(state.accentColor).toBe('#f97316');
     expect(state.borderRadius).toBe('medium');
   });
 
-  it('setTheme updates theme', () => {
+  it('setTheme updates theme and persists', () => {
     const useThemeStore = createThemeStore(storage);
     useThemeStore.getState().setTheme('dark');
     expect(useThemeStore.getState().theme).toBe('dark');
+  });
+
+  it('setTheme updates theme to light', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setTheme('light');
+    expect(useThemeStore.getState().theme).toBe('light');
   });
 
   it('setPrimaryColor updates color', () => {
@@ -353,9 +361,225 @@ describe('ThemeStore', () => {
     expect(useThemeStore.getState().primaryColor).toBe('#2563eb');
   });
 
+  it('setSecondaryColor updates color', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setSecondaryColor('#64748b');
+    expect(useThemeStore.getState().secondaryColor).toBe('#64748b');
+  });
+
+  it('setAccentColor updates color', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setAccentColor('#8b5cf6');
+    expect(useThemeStore.getState().accentColor).toBe('#8b5cf6');
+  });
+
   it('setBorderRadius updates radius', () => {
     const useThemeStore = createThemeStore(storage);
     useThemeStore.getState().setBorderRadius('large');
     expect(useThemeStore.getState().borderRadius).toBe('large');
+  });
+
+  it('setSystemDark updates systemDark state', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setSystemDark(true);
+    expect(useThemeStore.getState().systemDark).toBe(true);
+  });
+
+  it('loadTheme uses defaults when storage is empty', async () => {
+    const useThemeStore = createThemeStore(storage);
+    await useThemeStore.getState().loadTheme();
+    const state = useThemeStore.getState();
+    expect(state.theme).toBe('system');
+    expect(state.primaryColor).toBe('#ea580c');
+  });
+
+  it('loadTheme loads saved config from storage', async () => {
+    const useThemeStore = createThemeStore(storage);
+    // Set and persist
+    useThemeStore.getState().setTheme('dark');
+    useThemeStore.getState().setPrimaryColor('#2563eb');
+
+    // Also persist the version key (normally done by loadTheme)
+    await storage.setItem('eato_theme_version', '2');
+
+    // Create new store and load
+    const useThemeStore2 = createThemeStore(storage);
+    await useThemeStore2.getState().loadTheme();
+    expect(useThemeStore2.getState().theme).toBe('dark');
+    expect(useThemeStore2.getState().primaryColor).toBe('#2563eb');
+  });
+
+  it('loadTheme clears old config when version changes', async () => {
+    // Simulate old config in storage
+    await storage.setItem('eato_theme_config', JSON.stringify({
+      theme: 'dark',
+      primaryColor: '#1e293b',
+      secondaryColor: '#1e293b',
+      accentColor: '#f97316',
+      borderRadius: 'medium',
+    }));
+    // Old version key (no version = old config)
+    await storage.setItem('eato_theme_version', '0');
+
+    const useThemeStore = createThemeStore(storage);
+    await useThemeStore.getState().loadTheme();
+
+    // Should use new defaults, not old dark slate
+    expect(useThemeStore.getState().primaryColor).toBe('#ea580c');
+    expect(useThemeStore.getState().secondaryColor).toBe('');
+  });
+
+  it('persistTheme saves config to storage', async () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setTheme('dark');
+    useThemeStore.getState().setPrimaryColor('#2563eb');
+
+    const stored = await storage.getItem('eato_theme_config');
+    expect(stored).toBeTruthy();
+    const parsed = JSON.parse(stored!);
+    expect(parsed.theme).toBe('dark');
+    expect(parsed.primaryColor).toBe('#2563eb');
+  });
+});
+
+// ─── Theme Store Dark Mode Tests ───────────────────────────────
+
+describe('ThemeStore - Dark Mode', () => {
+  let storage: ReturnType<typeof createMockStorage>;
+  let classList: Set<string>;
+  let styleStore: Record<string, string>;
+  let mockDocument: any;
+
+  beforeEach(() => {
+    storage = createMockStorage();
+    classList = new Set<string>();
+    styleStore = {};
+
+    mockDocument = {
+      documentElement: {
+        classList: {
+          add: (c: string) => classList.add(c),
+          remove: (c: string) => classList.delete(c),
+          contains: (c: string) => classList.has(c),
+        },
+        style: {
+          setProperty: (k: string, v: string) => { styleStore[k] = v; },
+          removeProperty: (k: string) => { delete styleStore[k]; },
+          getPropertyValue: (k: string) => styleStore[k] || '',
+        },
+      },
+    };
+    vi.stubGlobal('document', mockDocument);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('setTheme dark adds .dark class to document', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setTheme('dark');
+    expect(classList.has('dark')).toBe(true);
+  });
+
+  it('setTheme light removes .dark class from document', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setTheme('dark');
+    expect(classList.has('dark')).toBe(true);
+
+    useThemeStore.getState().setTheme('light');
+    expect(classList.has('dark')).toBe(false);
+  });
+
+  it('setSystemDark adds .dark class when theme is system', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setTheme('system');
+    useThemeStore.getState().setSystemDark(true);
+    expect(classList.has('dark')).toBe(true);
+  });
+
+  it('setSystemDark removes .dark class when theme is system and not dark', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setTheme('system');
+    useThemeStore.getState().setSystemDark(true);
+    useThemeStore.getState().setSystemDark(false);
+    expect(classList.has('dark')).toBe(false);
+  });
+
+  it('loadTheme applies dark mode after loading', async () => {
+    await storage.setItem('eato_theme_config', JSON.stringify({
+      theme: 'dark',
+      primaryColor: '#ea580c',
+      secondaryColor: '',
+      accentColor: '#f97316',
+      borderRadius: 'medium',
+    }));
+    await storage.setItem('eato_theme_version', '2');
+
+    const useThemeStore = createThemeStore(storage);
+    await useThemeStore.getState().loadTheme();
+    expect(classList.has('dark')).toBe(true);
+  });
+});
+
+// ─── Theme Store Color Application Tests ───────────────────────
+
+describe('ThemeStore - Color Application', () => {
+  let storage: ReturnType<typeof createMockStorage>;
+  let styleStore: Record<string, string>;
+  let mockDocument: any;
+
+  beforeEach(() => {
+    storage = createMockStorage();
+    styleStore = {};
+
+    mockDocument = {
+      documentElement: {
+        classList: {
+          add: () => {},
+          remove: () => {},
+          contains: () => false,
+        },
+        style: {
+          setProperty: (k: string, v: string) => { styleStore[k] = v; },
+          removeProperty: (k: string) => { delete styleStore[k]; },
+          getPropertyValue: (k: string) => styleStore[k] || '',
+        },
+      },
+    };
+    vi.stubGlobal('document', mockDocument);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('applyThemeVars sets CSS variables for primary color', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setPrimaryColor('#2563eb');
+    useThemeStore.getState()._applyThemeVars();
+
+    const primary = styleStore['--primary'];
+    expect(primary).toBeTruthy();
+    expect(primary).toMatch(/^\d+ \d+% \d+%$/);
+  });
+
+  it('applyThemeVars sets secondary color when provided', () => {
+    const useThemeStore = createThemeStore(storage);
+    useThemeStore.getState().setSecondaryColor('#64748b');
+    useThemeStore.getState()._applyThemeVars();
+
+    const secondary = styleStore['--secondary'];
+    expect(secondary).toBeTruthy();
+    expect(secondary).toMatch(/^\d+ \d+% \d+%$/);
+  });
+
+  it('applyThemeVars does not set secondary when empty', () => {
+    const useThemeStore = createThemeStore(storage);
+    // secondaryColor is '' by default
+    useThemeStore.getState()._applyThemeVars();
+
+    const secondary = styleStore['--secondary'];
+    expect(secondary).toBeUndefined();
   });
 });
